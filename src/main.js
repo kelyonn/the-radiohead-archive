@@ -1,5 +1,7 @@
 import { SceneManager } from './visuals/SceneManager.js';
-import { ParticleSystem } from './visuals/ParticleSystem.js';
+import { BackgroundSystem } from './visuals/BackgroundSystem.js';
+import { UIManager } from './animations/UIManager.js';
+import { ScrollManager } from './animations/ScrollManager.js';
 import { AudioManager } from './audioManager.js';
 import { ERAS } from './data.js';
 
@@ -13,7 +15,9 @@ class App {
         this.loadingStatus = document.getElementById('loading-status');
         
         this.sceneManager = null;
-        this.particleSystem = null;
+        this.backgroundSystem = null;
+        this.uiManager = new UIManager();
+        this.scrollManager = null;
         this.audioManager = new AudioManager();
         
         this.terminalLog = document.querySelector('.terminal-log');
@@ -29,9 +33,20 @@ class App {
         this.currentEra = ERAS[0];
         this.currentEraIndex = 0;
         this.progress = 0;
-        this.particleProgress = 0;
         this.scrollProgress = 0;
+        this.mousePosition = { x: 0, y: 0 };
+        this.mouseWorldPosition = new THREE.Vector3(0, 0, 0);
+        this.isMobile = this.detectMobile();
+        this.fps = 60;
+        this.frameCount = 0;
+        this.lastFpsUpdate = performance.now();
+        this.qualityLevel = this.isMobile ? 'medium' : 'high';
         this.init();
+    }
+    
+    detectMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+               window.innerWidth <= 768;
     }
     
     updateProgress(percent, text) {
@@ -65,7 +80,9 @@ class App {
         
         await this.initializeScene();
         await this.preloadPosters();
-        this.setupEra(this.currentEra);
+        this.createAlbumSections();
+        this.uiManager.init();
+        this.scrollManager = new ScrollManager(this.sceneManager, this.backgroundSystem, this.uiManager);
         this.setupEventListeners();
         
         window.scrollTo(0, 0);
@@ -124,12 +141,21 @@ class App {
         this.updateProgress(20, 'CREATING WEBGL CONTEXT');
         await this.delay(50);
         
-        this.sceneManager = new SceneManager('canvas-container');
+        this.sceneManager = new SceneManager('canvas-container', this.isMobile);
         this.updateProgress(30, 'SCENE INITIALIZED');
         await this.delay(50);
         
         this.updateProgress(35, 'SETTING UP CAMERA');
         await this.delay(50);
+        
+        this.updateProgress(40, 'INITIALIZING BACKGROUND SYSTEM');
+        const particleCount = this.isMobile ? 8000 : 12000;
+        this.backgroundSystem = new BackgroundSystem(
+            this.sceneManager.scene,
+            this.sceneManager.camera,
+            particleCount
+        );
+        await this.delay(100);
         
         this.updateProgress(90, 'FINALIZING SCENE');
         await this.delay(100);
@@ -141,6 +167,50 @@ class App {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
     
+    createAlbumSections() {
+        const sectionsContainer = document.querySelector('.album-sections');
+        if (!sectionsContainer) return;
+        
+        // Set body height to accommodate all sections (each section needs scroll space)
+        document.body.style.minHeight = `${ERAS.length * 200}vh`;
+        
+        ERAS.forEach((era, index) => {
+            const section = document.createElement('div');
+            section.className = 'album-section';
+            section.setAttribute('data-era-index', index);
+            section.setAttribute('data-era-id', era.id);
+            
+            section.innerHTML = `
+                <div class="album-card">
+                    <div class="album-card-header">
+                        <div class="album-poster-container">
+                            <img class="album-poster" src="${era.poster}" alt="${era.title}">
+                            <div class="poster-loading hidden">LOADING...</div>
+                        </div>
+                        <div class="album-header-info">
+                            <h2 class="album-title">${era.title}</h2>
+                            <div class="album-year">${era.year}</div>
+                        </div>
+                    </div>
+                    <div class="album-card-body">
+                        <div class="album-description">${era.description}</div>
+                        <div class="album-tracks">
+                            <h3 class="tracks-title">TRACKS</h3>
+                            <div class="tracks-list">
+                                ${era.tracks.map(track => `<div class="track-item">${track}</div>`).join('')}
+                            </div>
+                        </div>
+                        <div class="album-log">
+                            ${era.log.map(log => `<div class="log-line">${log}</div>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            sectionsContainer.appendChild(section);
+        });
+    }
+    
     hideLoadingScreen() {
         if (this.loadingScreen) {
             this.loadingScreen.classList.add('hidden');
@@ -148,156 +218,30 @@ class App {
     }
     
     setupEra(era) {
-        const transitionDuration = 0.8;
-        
-        const tl = gsap.timeline({ defaults: { ease: 'power2.inOut' } });
-        
-        if (this.eraTitle) {
-            tl.to(this.eraTitle, {
-                opacity: 0,
-                duration: transitionDuration * 0.5,
-                onComplete: () => {
-                    this.eraTitle.textContent = era.title;
-                }
-            }, 0)
-            .to(this.eraTitle, {
-                opacity: 1,
-                duration: transitionDuration * 0.5
-            }, transitionDuration * 0.5);
-        }
-        
-        if (this.eraYear) {
-            tl.to(this.eraYear, {
-                opacity: 0,
-                duration: transitionDuration * 0.5,
-                onComplete: () => {
-                    this.eraYear.textContent = era.year;
-                }
-            }, 0)
-            .to(this.eraYear, {
-                opacity: 1,
-                duration: transitionDuration * 0.5
-            }, transitionDuration * 0.5);
-        }
-        
-        if (this.eraDescription) {
-            tl.to(this.eraDescription, {
-                opacity: 0,
-                duration: transitionDuration * 0.5,
-                onComplete: () => {
-                    this.eraDescription.textContent = era.description;
-                }
-            }, 0)
-            .to(this.eraDescription, {
-                opacity: 1,
-                duration: transitionDuration * 0.5
-            }, transitionDuration * 0.5);
-        }
-        
-        if (this.eraTracks) {
-            tl.to(this.eraTracks, {
-                opacity: 0,
-                duration: transitionDuration * 0.5,
-                onComplete: () => {
-                    this.eraTracks.textContent = era.tracks.join(' • ');
-                }
-            }, 0)
-            .to(this.eraTracks, {
-                opacity: 1,
-                duration: transitionDuration * 0.5
-            }, transitionDuration * 0.5);
-        }
-        
-        if (this.albumPoster && era.poster) {
-            const newSrc = era.poster;
-            const currentSrc = this.albumPoster.src || '';
-            
-            if (this.posterLoading) {
-                this.posterLoading.classList.remove('hidden');
-            }
-            
-            if (currentSrc && (currentSrc === newSrc || currentSrc.includes(newSrc.split('/').pop()))) {
-                if (this.posterLoading) {
-                    this.posterLoading.classList.add('hidden');
-                }
-                tl.to(this.albumPoster, {
-                    opacity: 0.9,
-                    duration: transitionDuration
-                }, 0);
-            } else {
-                const img = new Image();
-                
-                tl.to(this.albumPoster, {
-                    opacity: 0,
-                    duration: transitionDuration * 0.4,
-                    ease: 'power2.in'
-                }, 0);
-                
-                img.onload = () => {
-                    if (this.posterLoading) {
-                        this.posterLoading.classList.add('hidden');
-                    }
-                    
-                    this.albumPoster.src = newSrc;
-                    this.albumPoster.alt = `${era.title} Album Cover`;
-                    
-                    tl.to(this.albumPoster, {
-                        opacity: 0.9,
-                        duration: transitionDuration * 0.6,
-                        ease: 'power2.out'
-                    }, transitionDuration * 0.4);
-                };
-                
-                img.onerror = () => {
-                    console.error(`Failed to load poster for ${era.title}`);
-                    if (this.posterLoading) {
-                        this.posterLoading.classList.add('hidden');
-                    }
-                    tl.to(this.albumPoster, {
-                        opacity: 0.3,
-                        duration: transitionDuration * 0.6
-                    }, transitionDuration * 0.4);
-                    this.logToTerminal(`> POSTER_LOAD_FAILED: ${era.title}`);
-                };
-                
-                img.src = newSrc;
-            }
-        } else if (this.posterLoading) {
-            this.posterLoading.classList.add('hidden');
-        }
-        
-        if (this.terminalLog) {
-            tl.call(() => {
-                this.terminalLog.innerHTML = '';
-                era.log.forEach((line, index) => {
-                    setTimeout(() => {
-                        const p = document.createElement('p');
-                        p.textContent = line;
-                        this.terminalLog.appendChild(p);
-                    }, index * 100);
-                });
-            }, null, transitionDuration * 0.5);
-        }
-        
+        // Update scroll indicator
         this.updateScrollIndicator();
     }
     
     updateScrollIndicator() {
-        const progress = (this.currentEraIndex / (ERAS.length - 1)) * 100;
         const progressBar = document.querySelector('.scroll-progress-bar');
         if (progressBar) {
-            progressBar.style.setProperty('--progress', `${progress}%`);
-            const after = progressBar;
-            after.style.height = `${progress}%`;
+            const scrollY = window.scrollY || window.pageYOffset;
+            const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+            const ratio = scrollY / maxScroll;
+            const progress = Math.min(100, Math.max(0, ratio * 100));
+            progressBar.style.setProperty('--progress-height', `${progress}%`);
         }
         
-        this.scrollEras.forEach((era, index) => {
-            if (index === this.currentEraIndex) {
-                era.classList.add('active');
-            } else {
-                era.classList.remove('active');
-            }
-        });
+        // Update active era in scroll indicator
+        if (this.scrollEras) {
+            this.scrollEras.forEach((era, index) => {
+                if (index === this.currentEraIndex) {
+                    era.classList.add('active');
+                } else {
+                    era.classList.remove('active');
+                }
+            });
+        }
     }
     
     setupEventListeners() {
@@ -340,34 +284,39 @@ class App {
         window.addEventListener('wheel', (e) => this.handleWheel(e), { passive: true });
     }
     
+    
     handleScroll() {
-        // Particles removed
-        
         const scrollY = window.scrollY || window.pageYOffset;
         const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
         const scrollRatio = scrollY / maxScroll;
         
-        this.scrollProgress = scrollRatio * (ERAS.length - 1);
-        this.scrollProgress = Math.max(0, Math.min(ERAS.length - 1, this.scrollProgress));
-        
-        const eraIndex = Math.floor(this.scrollProgress);
-        const localProgress = this.scrollProgress - eraIndex;
-        const clampedEraIndex = Math.min(eraIndex, ERAS.length - 1);
-        
         this.updateScrollProgressBar(scrollRatio);
         
+        // Determine which section we're in based on scroll
+        const sectionProgress = scrollRatio * ERAS.length;
+        const currentSection = Math.floor(sectionProgress);
+        const clampedEraIndex = Math.min(currentSection, ERAS.length - 1);
+        
         if (clampedEraIndex !== this.currentEraIndex) {
+            this.currentEraIndex = clampedEraIndex;
+            this.currentEra = ERAS[clampedEraIndex];
             this.transitionToEra(clampedEraIndex);
         }
         
-        this.updateEraBlend(clampedEraIndex, localProgress);
+        // Update background system era color based on scroll
+        if (this.backgroundSystem && this.currentEra) {
+            this.backgroundSystem.setEraColor(this.currentEra.color);
+        }
+        
+        if (this.sceneManager && this.sceneManager.postProcessor && this.currentEra) {
+            this.sceneManager.postProcessor.setEraColor(this.currentEra.color);
+        }
     }
     
     handleWheel(e) {
-        // Particles removed
-        
         const delta = e.deltaY;
-        this.scrollProgress += delta * 0.0005;
+        const sensitivity = this.isMobile ? 0.0003 : 0.0005;
+        this.scrollProgress += delta * sensitivity;
         this.scrollProgress = Math.max(0, Math.min(ERAS.length - 1, this.scrollProgress));
         
         const eraIndex = Math.floor(this.scrollProgress);
@@ -393,55 +342,29 @@ class App {
     }
     
     transitionToEra(eraIndex) {
-        if (eraIndex === this.currentEraIndex) return;
+        if (eraIndex < 0 || eraIndex >= ERAS.length) return;
         
         this.currentEraIndex = eraIndex;
         this.currentEra = ERAS[eraIndex];
-        
-        this.setupEra(this.currentEra);
-        this.updateScrollIndicator();
         
         if (this.audioManager && this.audioManager.initialized) {
             this.audioManager.setEra(this.currentEra.id);
         }
         
-        let shapeType;
-        switch(this.currentEra.id) {
-            case 'in_rainbows':
-                shapeType = 'nebula';
-                break;
-            case 'ok_computer':
-                shapeType = 'grid';
-                break;
-            case 'kid_a':
-                shapeType = 'terrain';
-                break;
+        if (this.backgroundSystem) {
+            this.backgroundSystem.morphToEra(this.currentEra.id);
+            this.backgroundSystem.setEraColor(this.currentEra.color);
         }
         
-        // Particles removed
+        if (this.sceneManager && this.sceneManager.postProcessor) {
+            this.sceneManager.postProcessor.setEraColor(this.currentEra.color);
+        }
+        
+        this.updateScrollIndicator();
     }
     
     updateEraBlend(eraIndex, localProgress) {
-        const threshold = 0.3;
-        
-        if (localProgress > threshold && eraIndex < ERAS.length - 1) {
-            const nextEraIndex = eraIndex + 1;
-            const blendAmount = (localProgress - threshold) / (1 - threshold);
-            
-            if (this.eraTitle) {
-                gsap.to(this.eraTitle, {
-                    opacity: 1 - blendAmount * 0.5,
-                    duration: 0.2,
-                    ease: 'power1.out'
-                });
-            }
-        } else if (this.eraTitle) {
-            gsap.to(this.eraTitle, {
-                opacity: 1,
-                duration: 0.2,
-                ease: 'power1.out'
-            });
-        }
+        // Era blending handled by ScrollTrigger in ScrollManager
     }
     
     logToTerminal(message) {
@@ -455,11 +378,61 @@ class App {
     animate() {
         const time = performance.now();
         
+        this.frameCount++;
+        if (time - this.lastFpsUpdate >= 1000) {
+            this.fps = this.frameCount;
+            this.frameCount = 0;
+            this.lastFpsUpdate = time;
+            this.adjustQuality();
+        }
+        
         if (this.sceneManager) {
+            if (this.backgroundSystem) {
+                if (this.audioManager && this.audioManager.initialized) {
+                    const audioLevel = this.audioManager.getAudioLevel();
+                    this.backgroundSystem.setAudioLevel(audioLevel);
+                }
+                this.backgroundSystem.update(time);
+            }
             this.sceneManager.update();
         }
         
         requestAnimationFrame(() => this.animate());
+    }
+    
+    adjustQuality() {
+        if (this.fps < 30 && this.qualityLevel !== 'low') {
+            this.qualityLevel = 'low';
+            if (this.sceneManager && this.sceneManager.postProcessor) {
+                if (this.sceneManager.postProcessor.bloomPass) {
+                    this.sceneManager.postProcessor.bloomPass.strength = 0.5;
+                }
+            }
+            // Reduce particle count for low quality
+            if (this.backgroundSystem && this.backgroundSystem.particles) {
+                this.backgroundSystem.particles.visible = false;
+            }
+        } else if (this.fps < 45 && this.qualityLevel === 'high') {
+            this.qualityLevel = 'medium';
+            if (this.sceneManager && this.sceneManager.postProcessor) {
+                if (this.sceneManager.postProcessor.bloomPass) {
+                    this.sceneManager.postProcessor.bloomPass.strength = 1.5;
+                }
+            }
+            if (this.backgroundSystem && this.backgroundSystem.particles) {
+                this.backgroundSystem.particles.visible = true;
+            }
+        } else if (this.fps >= 55 && this.qualityLevel !== 'high' && !this.isMobile) {
+            this.qualityLevel = 'high';
+            if (this.sceneManager && this.sceneManager.postProcessor) {
+                if (this.sceneManager.postProcessor.bloomPass) {
+                    this.sceneManager.postProcessor.bloomPass.strength = 2.5;
+                }
+            }
+            if (this.backgroundSystem && this.backgroundSystem.particles) {
+                this.backgroundSystem.particles.visible = true;
+            }
+        }
     }
 }
 

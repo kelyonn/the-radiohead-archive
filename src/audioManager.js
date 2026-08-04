@@ -2,6 +2,8 @@ export class AudioManager {
     constructor() {
         this.audioContext = null;
         this.masterGain = null;
+        this.analyser = null;
+        this.frequencyData = null;
         this.oscillators = [];
         this.noiseNodes = [];
         this.initialized = false;
@@ -19,6 +21,13 @@ export class AudioManager {
             
             this.masterGain = this.audioContext.createGain();
             this.masterGain.gain.value = 0.05;
+            
+            this.analyser = this.audioContext.createAnalyser();
+            this.analyser.fftSize = 256;
+            this.analyser.smoothingTimeConstant = 0.8;
+            this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
+            
+            this.masterGain.connect(this.analyser);
             this.masterGain.connect(this.audioContext.destination);
             
             this.initialized = true;
@@ -171,5 +180,26 @@ export class AudioManager {
         lfo.start();
         
         this.oscillators.push(osc1, lfo);
+    }
+    
+    getFrequencyData() {
+        if (this.analyser && this.frequencyData) {
+            this.analyser.getByteFrequencyData(this.frequencyData);
+            return this.frequencyData;
+        }
+        return null;
+    }
+    
+    getAudioLevel() {
+        if (!this.analyser || !this.frequencyData) return 0;
+        
+        this.analyser.getByteFrequencyData(this.frequencyData);
+        
+        let sum = 0;
+        for (let i = 0; i < this.frequencyData.length; i++) {
+            sum += this.frequencyData[i];
+        }
+        
+        return (sum / (this.frequencyData.length * 255));
     }
 }

@@ -31,15 +31,8 @@
             <div class="system-status">SYSTEM: ONLINE</div>
         </header>
         
-        <div class="center-content">
-            <div class="album-poster-container">
-                <img id="album-poster" class="album-poster" src="" alt="Album Cover">
-                <div class="poster-loading" id="poster-loading">LOADING...</div>
-            </div>
-            <h2 id="era-title">IN RAINBOWS</h2>
-            <div id="era-year" class="era-year"></div>
-            <div id="era-description" class="era-description"></div>
-            <div id="era-tracks" class="era-tracks"></div>
+        <div class="album-sections">
+            <!-- Album sections will be dynamically created -->
         </div>
         
         <div class="terminal-log"></div>
@@ -63,7 +56,13 @@
     <div class="crt-scanline"></div>
     
     <script src="https://unpkg.com/three@0.150.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/shaders/CopyShader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script type="module">
         // Wait for scripts to load with proper error handling
         function waitForThree() {
