@@ -1,9 +1,11 @@
 import { ShapeGenerators } from './ShapeGenerators.js';
+import { createParticleShaderMaterial } from './shaders/particleShader.js';
 
 export class ParticleSystem {
-    constructor(scene, onProgress) {
+    constructor(scene, camera, onProgress, particleCount = 15000) {
         this.scene = scene;
-        this.particleCount = 15000;
+        this.camera = camera;
+        this.particleCount = particleCount;
         this.radius = 20;
         this.onProgress = onProgress;
         
@@ -13,27 +15,61 @@ export class ParticleSystem {
         this.colors = new Float32Array(this.particleCount * 3);
         this.targetColors = new Float32Array(this.particleCount * 3);
         
-        this.material = new THREE.PointsMaterial({
-            size: 0.2,
-            vertexColors: true,
-            blending: THREE.AdditiveBlending,
-            transparent: true,
-            sizeAttenuation: true
-        });
+        this.material = createParticleShaderMaterial();
         
         this.baseScale = 1;
         this.points = null;
         this.morphProgress = 0;
         this.isMorphing = false;
+        this.mousePosition = new THREE.Vector3(0, 0, 0);
+        this.interactionStrength = 0.0;
+        this.audioLevel = 0.0;
+    }
+    
+    setMousePosition(x, y, z) {
+        this.mousePosition.set(x, y, z);
+        if (this.material && this.material.uniforms) {
+            this.material.uniforms.mousePosition.value.copy(this.mousePosition);
+        }
+    }
+    
+    setInteractionStrength(strength) {
+        this.interactionStrength = strength;
+        if (this.material && this.material.uniforms) {
+            this.material.uniforms.interactionStrength.value = strength;
+        }
+    }
+    
+    setAudioLevel(level) {
+        this.audioLevel = level;
+        if (this.material && this.material.uniforms) {
+            this.material.uniforms.audioLevel.value = level;
+        }
     }
     
     async generateParticles() {
-        const nebula = ShapeGenerators.generateNebula(this.particleCount, this.radius);
+        // Get poster dimensions based on screen size
+        let posterWidth = 300;
+        let posterHeight = 300;
+        if (window.innerWidth <= 480) {
+            posterWidth = 150;
+            posterHeight = 150;
+        } else if (window.innerWidth <= 768) {
+            posterWidth = 200;
+            posterHeight = 200;
+        }
         
-        this.positions.set(nebula.positions);
-        this.targetPositions.set(nebula.positions);
-        this.colors.set(nebula.colors);
-        this.targetColors.set(nebula.colors);
+        const screenSpread = ShapeGenerators.generateScreenSpread(
+            this.particleCount, 
+            this.camera, 
+            posterWidth, 
+            posterHeight
+        );
+        
+        this.positions.set(screenSpread.positions);
+        this.targetPositions.set(screenSpread.positions);
+        this.colors.set(screenSpread.colors);
+        this.targetColors.set(screenSpread.colors);
         
         this.geometry.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
         this.geometry.setAttribute('color', new THREE.BufferAttribute(this.colors, 3));
@@ -100,13 +136,6 @@ export class ParticleSystem {
     }
     
     update(time) {
-        if (!this.points) return;
-        
-        if (!this.isMorphing) {
-            this.points.rotation.y += 0.001;
-        }
-        
-        const breathing = Math.sin(time * 0.001) * 0.1 + 1;
-        this.points.scale.set(breathing, breathing, breathing);
+        // No animations - particles are static
     }
 }
