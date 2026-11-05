@@ -19,6 +19,12 @@ export function scramble(el, text, duration = 700) {
   el._scr = requestAnimationFrame(step);
 }
 
+const SERVICES = [
+  { id: 'spotify', name: 'SPOTIFY', url: (q) => `https://open.spotify.com/search/${encodeURIComponent(q)}` },
+  { id: 'ytmusic', name: 'YOUTUBE MUSIC', url: (q) => `https://music.youtube.com/search?q=${encodeURIComponent(q)}` },
+  { id: 'apple', name: 'APPLE MUSIC', url: (q) => `https://music.apple.com/search?term=${encodeURIComponent(q)}` },
+];
+
 export class UI {
   constructor(albums, handlers) {
     this.albums = albums;
@@ -32,6 +38,8 @@ export class UI {
       coords: $('coords'), cursor: $('cursor'),
     };
     this.bars = [...this.el.meter.children];
+    try { this.service = localStorage.getItem('rha-service') || 'spotify'; } catch (_) { this.service = 'spotify'; }
+    if (!SERVICES.some((x) => x.id === this.service)) this.service = 'spotify';
     this._build();
   }
 
@@ -39,6 +47,20 @@ export class UI {
     const { albums, el } = this;
     // scroll track: one snap point per album
     el.track.innerHTML = albums.map(() => '<i></i>').join('');
+
+    // streaming service chooser
+    const svc = $('svc');
+    SERVICES.forEach((sv) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.dataset.svc = sv.id; b.textContent = sv.name;
+      b.addEventListener('click', () => {
+        this.service = sv.id;
+        try { localStorage.setItem('rha-service', sv.id); } catch (_) {}
+        this._links();
+      });
+      svc.appendChild(b);
+    });
+    this.svcButtons = [...svc.children];
 
     // rail
     const fill = document.createElement('div');
@@ -110,6 +132,20 @@ export class UI {
     }
   }
 
+  /** Point every play link at the chosen streaming service. */
+  _links() {
+    const sv = SERVICES.find((x) => x.id === this.service);
+    const a = this.albums[Math.max(0, this.index)];
+    this.svcButtons.forEach((b) => b.classList.toggle('on', b.dataset.svc === this.service));
+    const album = $('album-play');
+    album.href = sv.url(`Radiohead ${a.title.toLowerCase()} album`);
+    album.setAttribute('aria-label', `Play ${a.title} on ${sv.name}`);
+    this.el.tracks.querySelectorAll('a.play').forEach((l) => {
+      l.href = sv.url(`Radiohead ${l.dataset.track}`);
+      l.setAttribute('aria-label', `Play ${l.dataset.track} on ${sv.name}`);
+    });
+  }
+
   setSound(on, started) {
     this.el.sound.setAttribute('aria-pressed', String(on));
     this.el.soundLabel.textContent = on ? 'SOUND ON' : started ? 'MUTED' : 'SOUND OFF';
@@ -150,7 +186,13 @@ export class UI {
         const li = document.createElement('li');
         li.tabIndex = 0;
         li.style.setProperty('--i', k);
-        li.textContent = t;
+        const name = document.createElement('span');
+        name.className = 'tn'; name.textContent = t;
+        const play = document.createElement('a');
+        play.className = 'play'; play.textContent = '\u25B6'; play.dataset.track = t;
+        play.target = '_blank'; play.rel = 'noopener noreferrer';
+        play.addEventListener('click', (e) => e.stopPropagation());
+        li.append(name, play);
         const fire = () => {
           li.classList.add('hit'); setTimeout(() => li.classList.remove('hit'), 350);
           this.h.onTrack(i, k);
@@ -164,6 +206,7 @@ export class UI {
       scramble(el.year, String(a.year), 650);
       scramble(el.code, a.codename, 900);
       el.count.textContent = `${a.tracks.length} TRACKS`;
+      this._links();
       this._typeLog(a.log);
     };
 

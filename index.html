@@ -41,9 +41,11 @@
         <div><dt>PRODUCER</dt><dd id="m-producer"></dd></div>
         <div><dt>LABEL</dt><dd id="m-label"></dd></div>
       </dl>
+      <a class="album-play" id="album-play" target="_blank" rel="noopener noreferrer"><span>&#9654;</span> PLAY FULL ALBUM</a>
       <button class="tracks-toggle" id="tracks-toggle" type="button" aria-expanded="false">TRACKLIST <b>+</b></button>
       <div class="tracks" id="tracks-wrap">
-        <h2 class="tracks-h">TRACKLIST <small>// click a track to play a tone</small></h2>
+        <h2 class="tracks-h">TRACKLIST <small>// click a title for a tone, &#9654; to stream</small></h2>
+        <div class="svc" id="svc" role="group" aria-label="Streaming service"></div>
         <ol class="tracklist" id="tracks"></ol>
       </div>
       <div class="log" id="log" aria-hidden="true"></div>
