@@ -1,113 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE RADIOHEAD ARCHIVE</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#05060a">
+  <meta name="description" content="An interactive WebGL archive of Radiohead's nine studio albums. Scroll to disintegrate one era into the next.">
+  <title>THE RADIOHEAD ARCHIVE</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2305060a'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%2359d6ff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23ff3347'/%3E%3C/svg%3E">
 </head>
-<body>
-    <div id="loading-screen" class="loading-screen">
-        <div class="loading-content">
-            <h1 class="loading-title">THE RADIOHEAD ARCHIVE</h1>
-            <div class="loading-status" id="loading-status">INITIALIZING ARCHIVE...</div>
-            <div class="loading-bar-container">
-                <div class="loading-bar-fill" id="loading-bar-fill"></div>
-                <div class="loading-bar-glow"></div>
-            </div>
-            <div class="loading-percentage" id="loading-percentage">0%</div>
-            <div class="loading-text" id="loading-text">LOADING WEBGL CONTEXT</div>
-        </div>
+<body class="booting">
+  <div id="stage" aria-hidden="true"></div>
+  <div class="nowebgl-bg" aria-hidden="true"></div>
+
+  <!-- scroll track: one viewport per album -->
+  <div id="track"></div>
+
+  <div class="hud" id="hud">
+    <header class="top">
+      <a class="brand" href="#" data-goto="0" aria-label="Back to first album">
+        <span class="brand-mark"></span>RADIOHEAD<em>/ARCHIVE</em>
+      </a>
+      <nav class="nav" id="menu" aria-label="Sections">
+        <button type="button" data-sheet="timeline">TIMELINE</button>
+        <button type="button" data-sheet="band">BAND</button>
+        <button type="button" data-sheet="stories">STORIES</button>
+        <button type="button" data-sheet="gallery">GALLERY</button>
+        <button type="button" class="listen-nav" data-listen>&#9654; LISTEN</button>
+      </nav>
+      <div class="top-right">
+        <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">MENU</button>
+        <span class="readout" id="clock">T+00:00:00</span>
+        <button class="sound" id="sound" type="button" aria-pressed="false" aria-label="Toggle sound">
+          <span class="meter" id="meter"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span id="sound-label">SOUND OFF</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="info" id="info" aria-live="polite">
+      <div class="idx">
+        <span class="idx-cur" id="idx-cur">01</span><span class="idx-total">/09</span>
+        <span class="codename" id="codename"></span>
+      </div>
+      <h1 class="title" id="title"></h1>
+      <div class="year-row"><span class="year" id="year"></span><span class="rule"></span><span class="count" id="count"></span></div>
+      <p class="blurb" id="blurb"></p>
+      <dl class="meta">
+        <div><dt>PRODUCER</dt><dd id="m-producer"></dd></div>
+        <div><dt>LABEL</dt><dd id="m-label"></dd></div>
+      </dl>
+      <div class="play-row"><button type="button" class="album-play" id="album-play" data-listen><span>&#9654;</span> LISTEN HERE</button><a class="ext-link" id="album-ext" target="_blank" rel="noopener noreferrer">OPEN IN APP &nearr;</a></div>
+      <button class="tracks-toggle" id="tracks-toggle" type="button" aria-expanded="false">TRACKLIST <b>+</b></button>
+      <div class="tracks" id="tracks-wrap">
+        <h2 class="tracks-h">TRACKLIST <small>// click a title for a tone, &#9654; to open the player</small></h2>
+        <div class="svc" id="svc" role="group" aria-label="Streaming service"></div>
+        <ol class="tracklist" id="tracks"></ol>
+      </div>
+      <div class="log" id="log" aria-hidden="true"></div>
+    </section>
+
+    <nav class="rail" id="rail" aria-label="Albums"></nav>
+
+    <div class="hint" id="hint"><span class="hint-line"></span>SCROLL / ARROW KEYS</div>
+    <div class="pager">
+      <button type="button" id="prev" aria-label="Previous album">&larr;</button>
+      <button type="button" id="next" aria-label="Next album">&rarr;</button>
     </div>
-    
-    <div id="canvas-container"></div>
-    
-    <div class="ui-layer">
-        <header>
-            <h1>RADIOHEAD</h1>
-            <div class="system-status">SYSTEM: ONLINE</div>
-        </header>
-        
-        <div class="album-sections">
-            <!-- Album sections will be dynamically created -->
-        </div>
-        
-        <div class="terminal-log"></div>
-        
-        <div class="scroll-indicator">
-            <div class="scroll-progress-bar"></div>
-            <div class="scroll-eras">
-                <div class="scroll-era active" data-era="0">IN RAINBOWS</div>
-                <div class="scroll-era" data-era="1">OK COMPUTER</div>
-                <div class="scroll-era" data-era="2">KID A</div>
-            </div>
-        </div>
-        
-        <button id="audio-btn" class="audio-button">INITIALIZE_AUDIO</button>
-        
-        <footer class="legal">
-            UNOFFICIAL FAN PROJECT. EDUCATIONAL USE ONLY.
-        </footer>
+
+    <div class="coords" id="coords">X +0.00 &nbsp;Y +0.00</div>
+    <footer class="legal">UNOFFICIAL FAN PROJECT &middot; NO AFFILIATION WITH RADIOHEAD &middot; NO RECORDINGS HOSTED &mdash; ALL SOUND IS SYNTHESISED IN YOUR BROWSER</footer>
+  </div>
+
+  <aside class="player" id="player" aria-label="Album player">
+    <div class="player-bar">
+      <span class="player-dot"></span><span class="player-label">NOW LISTENING</span><b id="player-name"></b>
+      <button type="button" id="player-expand" aria-pressed="false">TRACKLIST</button>
+      <button type="button" id="player-close" aria-label="Close player">&times;</button>
     </div>
-    
-    <div class="crt-scanline"></div>
-    
-    <script src="https://unpkg.com/three@0.150.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/postprocessing/EffectComposer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/postprocessing/RenderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/postprocessing/ShaderPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.150.0/examples/js/shaders/CopyShader.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script type="module">
-        // Wait for scripts to load with proper error handling
-        function waitForThree() {
-            return new Promise((resolve, reject) => {
-                let attempts = 0;
-                const maxAttempts = 200; // 10 seconds max wait
-            
-                const check = () => {
-                    attempts++;
-                    if (typeof THREE !== 'undefined') {
-                        resolve();
-                    } else if (attempts >= maxAttempts) {
-                        reject(new Error('THREE.js failed to load after timeout'));
-                    } else {
-                        setTimeout(check, 50);
-                    }
-                };
-                check();
-            });
-        }
-        
-        async function initApp() {
-            try {
-                await waitForThree();
-                import('./src/main.js').catch(err => {
-                    console.error('Failed to load main module:', err);
-                    const loadingText = document.getElementById('loading-text');
-                    if (loadingText) {
-                        loadingText.textContent = 'ERROR: MODULE LOAD FAILED';
-                    }
-                });
-            } catch (error) {
-                console.error('THREE.js loading error:', error);
-                const loadingText = document.getElementById('loading-text');
-                if (loadingText) {
-                    loadingText.textContent = 'ERROR: THREE.JS FAILED TO LOAD';
-                }
-            }
-        }
-        
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initApp);
-        } else {
-            initApp();
-        }
-    </script>
+    <div id="player-frame"></div>
+    <p class="player-note">Streams through Spotify. Sign in there for full tracks; otherwise you get previews.</p>
+  </aside>
+
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" aria-hidden="true">
+    <div class="sheet-panel">
+      <header class="sheet-head">
+        <div><h2 id="sheet-title"></h2><div class="sheet-sub" id="sheet-sub"></div></div>
+        <button type="button" id="sheet-close" aria-label="Close">CLOSE &times;</button>
+      </header>
+      <div class="sheet-body" id="sheet-body"></div>
+    </div>
+  </div>
+  <div class="lightbox" id="lightbox" role="dialog" aria-label="Enlarged plate"><figure><img alt=""><figcaption></figcaption></figure></div>
+
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+
+  <div class="gate" id="gate" role="dialog" aria-label="Enter the archive">
+    <div class="gate-inner">
+      <div class="gate-kicker">UNOFFICIAL ARCHIVE &middot; 9 STUDIO ALBUMS &middot; 1993&ndash;2016</div>
+      <h1 class="gate-title" data-text="THE RADIOHEAD ARCHIVE">THE RADIOHEAD<br>ARCHIVE</h1>
+      <div class="gate-status" id="gate-status">INITIALIZING ARCHIVE</div>
+      <div class="gate-bar"><i id="gate-bar"></i></div>
+      <div class="gate-actions" id="gate-actions" hidden>
+        <button type="button" class="btn primary" id="enter-sound">ENTER WITH SOUND</button>
+        <button type="button" class="btn" id="enter-silent">ENTER SILENT</button>
+      </div>
+      <p class="gate-note">Best with headphones. Scroll, swipe or use arrow keys. Move your pointer through the particles.</p>
+    </div>
+  </div>
+
+  <noscript><p style="position:fixed;inset:0;display:grid;place-items:center;color:#fff;font-family:monospace">THIS ARCHIVE REQUIRES JAVASCRIPT.</p></noscript>
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
