@@ -1,85 +1,166 @@
-export const ERAS = [
-    {
-        id: 'in_rainbows',
-        title: 'IN RAINBOWS',
-        year: 2007,
-        color: { r: 1, g: 0, b: 0.5 },
-        poster: 'https://coverartarchive.org/release/a58f4eb2-9829-37d5-b46c-e8163038e0f5/3559497964-500.jpg',
-        description: 'A self-released album that revolutionized music distribution. Organic, warm, and emotionally resonant.',
-        log: [
-            '> DETECTING ORGANIC DECAY',
-            '> STATUS: OPTIMIZED',
-            '> RELEASE: OCTOBER 10, 2007',
-            '> DISTRIBUTION: PAY-WHAT-YOU-WANT',
-            '> SIGNAL: WARM ARPEGGIOS + STATIC'
-        ],
-        tracks: [
-            '15 Step',
-            'Bodysnatchers',
-            'Nude',
-            'Weird Fishes / Arpeggi',
-            'All I Need',
-            'Faust Arp',
-            'Reckoner',
-            'House of Cards',
-            'Jigsaw Falling into Place',
-            'Videotape'
-        ]
-    },
-    {
-        id: 'ok_computer',
-        title: 'OK COMPUTER',
-        year: 1997,
-        color: { r: 0, g: 1, b: 1 },
-        poster: 'https://coverartarchive.org/release/1834eae1-741b-3c03-9ca5-0df3decb43ea/18174904878-500.jpg',
-        description: 'A dystopian masterpiece exploring technology, alienation, and modern anxiety. Mechanical, precise, paranoid.',
-        log: [
-            '> DETECTING TRANSPORT MOTORWAY',
-            '> STATUS: PARANOID',
-            '> RELEASE: MAY 21, 1997',
-            '> SIGNAL: DIAL-UP DRONE + ROBOTIC BEEPS',
-            '> ANXIETY LEVEL: CRITICAL'
-        ],
-        tracks: [
-            'Airbag',
-            'Paranoid Android',
-            'Subterranean Homesick Alien',
-            'Exit Music (For a Film)',
-            'Let Down',
-            'Karma Police',
-            'Fitter Happier',
-            'Electioneering',
-            'Climbing Up the Walls',
-            'No Surprises',
-            'Lucky',
-            'The Tourist'
-        ]
-    },
-    {
-        id: 'kid_a',
-        title: 'KID A',
-        year: 2000,
-        color: { r: 1, g: 1, b: 1 },
-        poster: 'https://coverartarchive.org/release-group/e75c0549-ad55-39e3-8025-c72c5d4a3c5d/front-500.jpg',
-        description: 'An electronic reinvention. Abstract, glacial, and emotionally distant. The sound of digital isolation.',
-        log: [
-            '> DETECTING ICE FIELD',
-            '> STATUS: DISSOCIATED',
-            '> RELEASE: OCTOBER 2, 2000',
-            '> SIGNAL: WIND + SUB-BASS',
-            '> TEMPERATURE: ABSOLUTE ZERO'
-        ],
-        tracks: [
-            'Everything in Its Right Place',
-            'Kid A',
-            'The National Anthem',
-            'How to Disappear Completely',
-            'Treefingers',
-            'Optimistic',
-            'In Limbo',
-            'Idioteque',
-            'Morning Bell',
-            'Motion Picture Soundtrack'
-        ]
-    }
+// Album data. Colours are [primary, secondary, accent] as hex strings.
+// `shape` keys map to generators in shapes.js; `audio` keys map to patches in audio.js.
+
+export const ALBUMS = [
+  {
+    id: 'pablo_honey',
+    spotify: '4YYwK9eAIWEUCYdvf40Nnk',
+    title: 'PABLO HONEY',
+    year: 1993,
+    producer: 'Paul Q. Kolderie, Sean Slade, Chris Hufford',
+    label: 'Parlophone',
+    shape: 'noisy_sphere',
+    palette: ['#e6e24a', '#ff9a1f', '#5a7a2a'],
+    codename: 'SIGNAL_01 // RAW',
+    blurb:
+      'Five Oxford schoolfriends, loud guitars, and a single that escaped the room. Raw, overdriven and still unsure of itself — the blueprint before the rebuild.',
+    log: ['> LOADING EARLY_SESSIONS.DAT', '> GUITAR GAIN: EXCESSIVE', '> IDENTITY: UNRESOLVED'],
+    tracks: [
+      'You', 'Creep', 'How Do You?', 'Stop Whispering', 'Thinking About You', 'Anyone Can Play Guitar',
+      'Ripcord', 'Vegetable', 'Prove Yourself', "I Can't", 'Lurgee', 'Blow Out',
+    ],
+  },
+  {
+    id: 'the_bends',
+    spotify: '35UJLpClj5EDrhpNIi4DFg',
+    title: 'THE BENDS',
+    year: 1995,
+    producer: 'John Leckie',
+    label: 'Parlophone',
+    shape: 'helix',
+    palette: ['#ff3347', '#3b7bff', '#ffd9a0'],
+    codename: 'SIGNAL_02 // PULSE',
+    blurb:
+      'Stadium-sized guitars wrapped around real fragility. Fake plastic trees, hospital light, and a band discovering how much sound it could hold.',
+    log: ['> VITAL SIGNS: ELEVATED', '> STRUCTURE: DOUBLE HELIX', '> PRESSURE RISING'],
+    tracks: [
+      'Planet Telex', 'The Bends', 'High and Dry', 'Fake Plastic Trees', 'Bones', '(Nice Dream)',
+      'Just', 'My Iron Lung', 'Bullet Proof..I Wish I Was', 'Black Star', 'Sulk', 'Street Spirit (Fade Out)',
+    ],
+  },
+  {
+    id: 'ok_computer',
+    spotify: '6dVIqQ8qmQ5GBnJ9shOYGE',
+    title: 'OK COMPUTER',
+    year: 1997,
+    producer: 'Nigel Godrich, Radiohead',
+    label: 'Parlophone',
+    shape: 'highway',
+    palette: ['#59d6ff', '#e8f6ff', '#2a47ff'],
+    codename: 'SIGNAL_03 // TRANSIT',
+    blurb:
+      'Airports, motorways, and a creeping sense that the machines were listening. A paranoid, widescreen portrait of the end of the millennium.',
+    log: ['> SCANNING TRANSPORT MOTORWAY', '> STATUS: PARANOID', '> VANISHING POINT LOCKED'],
+    tracks: [
+      'Airbag', 'Paranoid Android', 'Subterranean Homesick Alien', 'Exit Music (For a Film)', 'Let Down',
+      'Karma Police', 'Fitter Happier', 'Electioneering', 'Climbing Up the Walls', 'No Surprises', 'Lucky', 'The Tourist',
+    ],
+  },
+  {
+    id: 'kid_a',
+    spotify: '6GjwtEZcfenmOf6l18N7T7',
+    title: 'KID A',
+    year: 2000,
+    producer: 'Nigel Godrich, Radiohead',
+    label: 'Parlophone',
+    shape: 'ice_terrain',
+    palette: ['#dff3ff', '#ff3b2f', '#7aa8ff'],
+    codename: 'SIGNAL_04 // GLACIER',
+    blurb:
+      'Guitars out, synthesizers and laptops in. Abstract, glacial and emotionally distant — a deliberate break that rewired what a rock band could be.',
+    log: ['> DETECTING ICE FIELD', '> STATUS: DISSOCIATED', '> TEMPERATURE: ABSOLUTE ZERO'],
+    tracks: [
+      'Everything in Its Right Place', 'Kid A', 'The National Anthem', 'How to Disappear Completely', 'Treefingers',
+      'Optimistic', 'In Limbo', 'Idioteque', 'Morning Bell', 'Motion Picture Soundtrack',
+    ],
+  },
+  {
+    id: 'amnesiac',
+    spotify: '6eIhOXRKIOXa71UBX7WIv5',
+    title: 'AMNESIAC',
+    year: 2001,
+    producer: 'Nigel Godrich, Radiohead',
+    label: 'Parlophone',
+    shape: 'knot',
+    palette: ['#d9a566', '#2fbf9f', '#7a3b2a'],
+    codename: 'SIGNAL_05 // LOOP',
+    blurb:
+      "Recorded alongside Kid A and often read as its twin: stranger, darker, more handmade. Pyramid songs, jazz ghosts and a looped, half-remembered dream.",
+    log: ['> MEMORY INTEGRITY: 41%', '> TOPOLOGY: KNOT (3,5)', '> RECURSION DETECTED'],
+    tracks: [
+      'Packt Like Sardines in a Crushd Tin Box', 'Pyramid Song', 'Pulk/Pull Revolving Doors', 'You and Whose Army?',
+      'I Might Be Wrong', 'Knives Out', 'Morning Bell/Amnesiac', 'Dollars and Cents', 'Hunting Bears',
+      'Like Spinning Plates', 'Life in a Glasshouse',
+    ],
+  },
+  {
+    id: 'hail_to_the_thief',
+    spotify: '5mzoI3VH0ZWk1pLFR6RoYy',
+    title: 'HAIL TO THE THIEF',
+    year: 2003,
+    producer: 'Nigel Godrich, Radiohead',
+    label: 'Parlophone',
+    shape: 'lorenz',
+    palette: ['#ff3fb4', '#ffe14a', '#2ee6ff'],
+    codename: 'SIGNAL_06 // STATIC',
+    blurb:
+      'Written fast, recorded in days, and loud with the noise of its time: politics, fear, guitars and glitches colliding. Chaos, mapped.',
+    log: ['> ATTRACTOR: LORENZ', '> NOISE FLOOR: HOSTILE', '> SYSTEM: UNSTABLE'],
+    tracks: [
+      '2 + 2 = 5', 'Sit Down. Stand Up.', 'Sail to the Moon', 'Backdrifts', 'Go to Sleep', 'Where I End and You Begin',
+      'We Suck Young Blood', 'The Gloaming', 'There There', 'I Will', 'A Punchup at a Wedding', 'Myxomatosis',
+      'Scatterbrain', 'A Wolf at the Door',
+    ],
+  },
+  {
+    id: 'in_rainbows',
+    spotify: '5vkqYmiPBYLaalcmjujWxK',
+    title: 'IN RAINBOWS',
+    year: 2007,
+    producer: 'Nigel Godrich',
+    label: 'Self-released',
+    shape: 'rainbow',
+    palette: ['#ff2f7e', '#ffb02e', '#35e0ff'],
+    codename: 'SIGNAL_07 // SPECTRUM',
+    blurb:
+      'Released as a pay-what-you-want download, and warmer than anything before it. Rhythmic, human and luminous — a band at full colour.',
+    log: ['> SPECTRUM: FULL', '> DISTRIBUTION: PAY-WHAT-YOU-WANT', '> STATUS: OPTIMIZED'],
+    tracks: [
+      '15 Step', 'Bodysnatchers', 'Nude', 'Weird Fishes/Arpeggi', 'All I Need', 'Faust Arp', 'Reckoner',
+      'House of Cards', 'Jigsaw Falling into Place', 'Videotape',
+    ],
+  },
+  {
+    id: 'the_king_of_limbs',
+    spotify: '3P17levwUPzmFfLYdAK3A7',
+    title: 'THE KING OF LIMBS',
+    year: 2011,
+    producer: 'Nigel Godrich',
+    label: 'Self-released',
+    shape: 'tree',
+    palette: ['#ffb45c', '#7bd96a', '#c7392b'],
+    codename: 'SIGNAL_08 // GROWTH',
+    blurb:
+      'Short, rhythmic and built from loops: a dense thicket of clicks, birdsong and sub-bass. Organic structure grown from machine patterns.',
+    log: ['> BRANCHING: RECURSIVE', '> LOOP LENGTH: 7', '> CANOPY DENSITY: HIGH'],
+    tracks: ['Bloom', 'Morning Mr Magpie', 'Little by Little', 'Feral', 'Lotus Flower', 'Codex', 'Give Up the Ghost', 'Separator'],
+  },
+  {
+    id: 'a_moon_shaped_pool',
+    spotify: '2ix8vWvvSp2Yo7rKMiWpkg',
+    title: 'A MOON SHAPED POOL',
+    year: 2016,
+    producer: 'Nigel Godrich',
+    label: 'XL Recordings',
+    shape: 'moon_pool',
+    palette: ['#6f9bff', '#e9eeff', '#8a5cff'],
+    codename: 'SIGNAL_09 // TIDE',
+    blurb:
+      'Orchestral strings, patient piano, and songs reaching back across decades. Quiet, deep and still — reflections on dark water.',
+    log: ['> TIDAL LOCK: ENGAGED', '> STRINGS: LONDON CONTEMPORARY ORCHESTRA', '> SURFACE: STILL'],
+    tracks: [
+      'Burn the Witch', 'Daydreaming', 'Decks Dark', 'Desert Island Disk', 'Ful Stop', 'Glass Eyes', 'Identikit',
+      'The Numbers', 'Present Tense', 'Tinker Tailor Soldier Sailor Rich Man Poor Man Beggar Man Thief', 'True Love Waits',
+    ],
+  },
 ];
