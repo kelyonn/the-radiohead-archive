@@ -34,7 +34,7 @@ function goTo(i, instant = false) {
 function onAlbumChange(i) {
   activeIndex = i;
   ui.setAlbum(i);
-  history.replaceState(null, '', `#${slug(ALBUMS[i])}`);
+  try { history.replaceState(null, '', `#${slug(ALBUMS[i])}`); } catch (_) {}
   clearTimeout(audioTimer);
   audioTimer = setTimeout(() => audio.setAlbum(i), 380); // wait for scrolling to settle
 }
