@@ -264,8 +264,8 @@ export class Stage {
     // layout: sculpture sits right of the text on wide screens, above on narrow
     const side = this.layoutMode === 'side';
     const tx = side ? 15 : 0, ty = side ? 0 : 11, ts = side ? 1 : 0.78;
-    if (this.forceCenter) { this.group.position.set(0, 0, 0); this.group.scale.setScalar(1.12); }
-    if (!this.forceCenter) {
+
+    if (!this.viewOverride) {
       this.group.position.x = damp(this.group.position.x, tx, 4, dt);
       this.group.position.y = damp(this.group.position.y, ty, 4, dt);
       this.group.scale.setScalar(damp(this.group.scale.x, ts, 4, dt));
@@ -278,6 +278,12 @@ export class Stage {
     this.group.rotation.x = 0.1 + Math.sin(this.time * 0.1 + 1.0) * 0.06 - this.pointerSmooth.y * 0.2;
     this.camera.position.x = damp(this.camera.position.x, this.pointerSmooth.x * 2.0, 3, dt);
     this.camera.position.y = damp(this.camera.position.y, this.pointerSmooth.y * 1.2, 3, dt);
+    if (this.viewOverride) {
+      const v = this.viewOverride;
+      this.group.position.set(0, 0, 0); this.group.scale.setScalar(v.scale);
+      this.group.rotation.set(v.rx, v.ry, 0);
+      this.camera.position.set(0, 0, v.cz);
+    }
     this.camera.lookAt(0, 0, 0);
 
     // pointer → local space ray/plane hit for repulsion
