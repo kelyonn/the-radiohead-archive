@@ -4,6 +4,7 @@ import { SHAPES } from './shapes.js';
 import { Stage } from './stage.js';
 import { AudioEngine } from './audio.js';
 import { UI } from './ui.js';
+import { Sheets, Player } from './sheets.js';
 
 const N = ALBUMS.length;
 const mobile = matchMedia('(pointer: coarse)').matches || Math.min(innerWidth, innerHeight) < 600;
@@ -22,6 +23,8 @@ let started = false;
 let enteredAt = 0;
 let activeIndex = 0;
 let audioTimer = 0;
+let sheets = null;
+let player = null;
 
 // ---- scroll <-> album mapping ---------------------------------------------
 const perAlbum = () => Math.max(1, (document.documentElement.scrollHeight - innerHeight) / (N - 1));
@@ -35,6 +38,7 @@ function onAlbumChange(i) {
   activeIndex = i;
   ui.setAlbum(i);
   try { history.replaceState(null, '', `#${slug(ALBUMS[i])}`); } catch (_) {}
+  player?.setAlbum(i);
   clearTimeout(audioTimer);
   audioTimer = setTimeout(() => audio.setAlbum(i), 380); // wait for scrolling to settle
 }
@@ -45,6 +49,21 @@ async function boot() {
     onNavigate: (i) => goTo(i),
     onTrack: (ai, ti) => { audio.pluck(ai, ti); stage?.ping(0.9); },
     onSound: toggleSound,
+    onListen: () => player.open(),
+  });
+  sheets = new Sheets({
+    onAlbum: (i) => goTo(i),
+    onOpen: () => { stage?.ping(0.5); },
+    onClose: () => {},
+  });
+  player = new Player({
+    onOpen: () => { if (audio.ready && !audio.muted) { audio.setMuted(true); ui.setSound(false, true); } },
+  });
+  player.setAlbum(hashIndex());
+  const menuBtn = document.getElementById('menu-btn');
+  menuBtn.addEventListener('click', () => {
+    const open = document.getElementById('menu').classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', String(open));
   });
   ui.setAlbum(hashIndex());
   ui.setSound(false, false);
@@ -138,6 +157,7 @@ function bindInput() {
 
   addEventListener('keydown', (e) => {
     if (!started || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (sheets?.isOpen) { if (e.key === 'Escape') sheets.close(); return; }
     const k = e.key;
     if (['ArrowDown', 'ArrowRight', 'PageDown'].includes(k) || (k === ' ' && !e.shiftKey && !e.target.closest('button, li'))) { e.preventDefault(); goTo(activeIndex + 1); }
     else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(k) || (k === ' ' && e.shiftKey)) { e.preventDefault(); goTo(activeIndex - 1); }

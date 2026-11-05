@@ -20,7 +20,15 @@
       <a class="brand" href="#" data-goto="0" aria-label="Back to first album">
         <span class="brand-mark"></span>RADIOHEAD<em>/ARCHIVE</em>
       </a>
+      <nav class="nav" id="menu" aria-label="Sections">
+        <button type="button" data-sheet="timeline">TIMELINE</button>
+        <button type="button" data-sheet="band">BAND</button>
+        <button type="button" data-sheet="stories">STORIES</button>
+        <button type="button" data-sheet="gallery">GALLERY</button>
+        <button type="button" class="listen-nav" data-listen>&#9654; LISTEN</button>
+      </nav>
       <div class="top-right">
+        <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">MENU</button>
         <span class="readout" id="clock">T+00:00:00</span>
         <button class="sound" id="sound" type="button" aria-pressed="false" aria-label="Toggle sound">
           <span class="meter" id="meter"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
@@ -41,10 +49,10 @@
         <div><dt>PRODUCER</dt><dd id="m-producer"></dd></div>
         <div><dt>LABEL</dt><dd id="m-label"></dd></div>
       </dl>
-      <a class="album-play" id="album-play" target="_blank" rel="noopener noreferrer"><span>&#9654;</span> PLAY FULL ALBUM</a>
+      <div class="play-row"><button type="button" class="album-play" id="album-play" data-listen><span>&#9654;</span> LISTEN HERE</button><a class="ext-link" id="album-ext" target="_blank" rel="noopener noreferrer">OPEN IN APP &nearr;</a></div>
       <button class="tracks-toggle" id="tracks-toggle" type="button" aria-expanded="false">TRACKLIST <b>+</b></button>
       <div class="tracks" id="tracks-wrap">
-        <h2 class="tracks-h">TRACKLIST <small>// click a title for a tone, &#9654; to stream</small></h2>
+        <h2 class="tracks-h">TRACKLIST <small>// click a title for a tone, &#9654; to open the player</small></h2>
         <div class="svc" id="svc" role="group" aria-label="Streaming service"></div>
         <ol class="tracklist" id="tracks"></ol>
       </div>
@@ -62,6 +70,27 @@
     <div class="coords" id="coords">X +0.00 &nbsp;Y +0.00</div>
     <footer class="legal">UNOFFICIAL FAN PROJECT &middot; NO AFFILIATION WITH RADIOHEAD &middot; NO RECORDINGS HOSTED &mdash; ALL SOUND IS SYNTHESISED IN YOUR BROWSER</footer>
   </div>
+
+  <aside class="player" id="player" aria-label="Album player">
+    <div class="player-bar">
+      <span class="player-dot"></span><span class="player-label">NOW LISTENING</span><b id="player-name"></b>
+      <button type="button" id="player-expand" aria-pressed="false">TRACKLIST</button>
+      <button type="button" id="player-close" aria-label="Close player">&times;</button>
+    </div>
+    <div id="player-frame"></div>
+    <p class="player-note">Streams through Spotify. Sign in there for full tracks; otherwise you get previews.</p>
+  </aside>
+
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" aria-hidden="true">
+    <div class="sheet-panel">
+      <header class="sheet-head">
+        <div><h2 id="sheet-title"></h2><div class="sheet-sub" id="sheet-sub"></div></div>
+        <button type="button" id="sheet-close" aria-label="Close">CLOSE &times;</button>
+      </header>
+      <div class="sheet-body" id="sheet-body"></div>
+    </div>
+  </div>
+  <div class="lightbox" id="lightbox" role="dialog" aria-label="Enlarged plate"><figure><img alt=""><figcaption></figcaption></figure></div>
 
   <div class="cursor" id="cursor" aria-hidden="true"></div>
 

@@ -48,7 +48,7 @@ export class UI {
     // scroll track: one snap point per album
     el.track.innerHTML = albums.map(() => '<i></i>').join('');
 
-    // streaming service chooser
+    // streaming service chooser (for the external 'open in app' link)
     const svc = $('svc');
     SERVICES.forEach((sv) => {
       const b = document.createElement('button');
@@ -137,13 +137,9 @@ export class UI {
     const sv = SERVICES.find((x) => x.id === this.service);
     const a = this.albums[Math.max(0, this.index)];
     this.svcButtons.forEach((b) => b.classList.toggle('on', b.dataset.svc === this.service));
-    const album = $('album-play');
-    album.href = sv.url(`Radiohead ${a.title.toLowerCase()} album`);
-    album.setAttribute('aria-label', `Play ${a.title} on ${sv.name}`);
-    this.el.tracks.querySelectorAll('a.play').forEach((l) => {
-      l.href = sv.url(`Radiohead ${l.dataset.track}`);
-      l.setAttribute('aria-label', `Play ${l.dataset.track} on ${sv.name}`);
-    });
+    const ext = $('album-ext');
+    ext.href = sv.url(`Radiohead ${a.title.toLowerCase()} album`);
+    ext.textContent = `OPEN IN ${sv.name} \u2197`;
   }
 
   setSound(on, started) {
@@ -188,10 +184,10 @@ export class UI {
         li.style.setProperty('--i', k);
         const name = document.createElement('span');
         name.className = 'tn'; name.textContent = t;
-        const play = document.createElement('a');
-        play.className = 'play'; play.textContent = '\u25B6'; play.dataset.track = t;
-        play.target = '_blank'; play.rel = 'noopener noreferrer';
-        play.addEventListener('click', (e) => e.stopPropagation());
+        const play = document.createElement('button');
+        play.type = 'button'; play.className = 'play'; play.textContent = '\u25B6'; play.dataset.track = t;
+        play.setAttribute('aria-label', `Open player for ${a.title}`);
+        play.addEventListener('click', (e) => { e.stopPropagation(); this.h.onListen?.(i, k); });
         li.append(name, play);
         const fire = () => {
           li.classList.add('hit'); setTimeout(() => li.classList.remove('hit'), 350);

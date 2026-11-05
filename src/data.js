@@ -4,6 +4,7 @@
 export const ALBUMS = [
   {
     id: 'pablo_honey',
+    spotify: '4YYwK9eAIWEUCYdvf40Nnk',
     title: 'PABLO HONEY',
     year: 1993,
     producer: 'Paul Q. Kolderie, Sean Slade, Chris Hufford',
@@ -21,6 +22,7 @@ export const ALBUMS = [
   },
   {
     id: 'the_bends',
+    spotify: '35UJLpClj5EDrhpNIi4DFg',
     title: 'THE BENDS',
     year: 1995,
     producer: 'John Leckie',
@@ -38,6 +40,7 @@ export const ALBUMS = [
   },
   {
     id: 'ok_computer',
+    spotify: '6dVIqQ8qmQ5GBnJ9shOYGE',
     title: 'OK COMPUTER',
     year: 1997,
     producer: 'Nigel Godrich, Radiohead',
@@ -55,6 +58,7 @@ export const ALBUMS = [
   },
   {
     id: 'kid_a',
+    spotify: '6GjwtEZcfenmOf6l18N7T7',
     title: 'KID A',
     year: 2000,
     producer: 'Nigel Godrich, Radiohead',
@@ -72,6 +76,7 @@ export const ALBUMS = [
   },
   {
     id: 'amnesiac',
+    spotify: '6eIhOXRKIOXa71UBX7WIv5',
     title: 'AMNESIAC',
     year: 2001,
     producer: 'Nigel Godrich, Radiohead',
@@ -90,6 +95,7 @@ export const ALBUMS = [
   },
   {
     id: 'hail_to_the_thief',
+    spotify: '5mzoI3VH0ZWk1pLFR6RoYy',
     title: 'HAIL TO THE THIEF',
     year: 2003,
     producer: 'Nigel Godrich, Radiohead',
@@ -108,6 +114,7 @@ export const ALBUMS = [
   },
   {
     id: 'in_rainbows',
+    spotify: '5vkqYmiPBYLaalcmjujWxK',
     title: 'IN RAINBOWS',
     year: 2007,
     producer: 'Nigel Godrich',
@@ -125,6 +132,7 @@ export const ALBUMS = [
   },
   {
     id: 'the_king_of_limbs',
+    spotify: '3P17levwUPzmFfLYdAK3A7',
     title: 'THE KING OF LIMBS',
     year: 2011,
     producer: 'Nigel Godrich',
@@ -139,6 +147,7 @@ export const ALBUMS = [
   },
   {
     id: 'a_moon_shaped_pool',
+    spotify: '2ix8vWvvSp2Yo7rKMiWpkg',
     title: 'A MOON SHAPED POOL',
     year: 2016,
     producer: 'Nigel Godrich',

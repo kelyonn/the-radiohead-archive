@@ -22,6 +22,18 @@ npm run build    # static site in dist/ (relative paths, works on GitHub Pages)
 | Push the particles | Move the pointer |
 | Mute / unmute | `M` or the SOUND button |
 
+## Sections
+
+- **Listen** — an in-site Spotify player that follows the album you are viewing (uses Spotify's official embed; sign in there for full tracks, otherwise you get previews).
+- **Timeline** — 1985 to today, linked back to each album.
+- **Band** — the five members plus producer Nigel Godrich and artist Stanley Donwood.
+- **Stories** — nine short, original reads.
+- **Gallery** — generated particle plates (original artwork) and free-licence photographs from Wikimedia Commons, each with a credit link.
+
+## Deploy (GitHub Pages)
+
+A workflow in `.github/workflows/pages.yml` builds and publishes `dist/` on every push to `main`. Enable it once under **Settings → Pages → Source: GitHub Actions**.
+
 ## What's inside
 
 - **Particle engine** (`src/stage.js`, `src/shaders.js`) — all morphing, flow-field noise, pointer repulsion, shockwaves and audio reactivity run in the vertex shader. Scroll position *is* the morph amount, so it is fully scrubbable and reversible.

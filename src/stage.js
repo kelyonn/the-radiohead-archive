@@ -264,10 +264,12 @@ export class Stage {
     // layout: sculpture sits right of the text on wide screens, above on narrow
     const side = this.layoutMode === 'side';
     const tx = side ? 15 : 0, ty = side ? 0 : 11, ts = side ? 1 : 0.78;
-    this.group.position.x = damp(this.group.position.x, tx, 4, dt);
-    this.group.position.y = damp(this.group.position.y, ty, 4, dt);
-    const s = damp(this.group.scale.x, ts, 4, dt);
-    this.group.scale.setScalar(s);
+    if (this.forceCenter) { this.group.position.set(0, 0, 0); this.group.scale.setScalar(1.12); }
+    if (!this.forceCenter) {
+      this.group.position.x = damp(this.group.position.x, tx, 4, dt);
+      this.group.position.y = damp(this.group.position.y, ty, 4, dt);
+      this.group.scale.setScalar(damp(this.group.scale.x, ts, 4, dt));
+    }
 
     // pointer parallax + slow sway
     this.pointerSmooth.x = damp(this.pointerSmooth.x, this.pointer.x, 3, dt);
