@@ -2,7 +2,22 @@ import { ALBUMS } from './data.js';
 import { TIMELINE, BAND, COLLABORATORS, STORIES, PHOTOS } from './content.js';
 
 const plateFiles = import.meta.glob('./assets/plates/*.jpg', { eager: true, query: '?url', import: 'default' });
-const PLATES = Object.keys(plateFiles).sort().map((k) => plateFiles[k]);
+const VIEW_ORDER = { '': 0, b: 1, c: 2 };
+const VIEW_NAME = { '': 'FRONT', b: 'ORBIT', c: 'CLOSE-UP' };
+const PLATES = Object.keys(plateFiles).map((k) => {
+  const m = k.match(/(\d+)(?:_([a-z]))?\.jpg$/);
+  return { src: plateFiles[k], album: +m[1] - 1, view: m[2] || '' };
+}).sort((a, b) => a.album - b.album || VIEW_ORDER[a.view] - VIEW_ORDER[b.view]);
+const plateFor = (album, view) => (PLATES.find((p) => p.album === album && p.view === view) || PLATES.find((p) => p.album === album))?.src;
+
+const photoFiles = import.meta.glob('./assets/photos/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}', { eager: true, query: '?url', import: 'default' });
+const LOCAL_PHOTOS = Object.keys(photoFiles).sort().map((k) => ({
+  src: photoFiles[k],
+  caption: k.split('/').pop().replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '),
+}));
+
+const STORY_ALBUM = [0, 0, 2, 2, 3, 4, 6, 8, 2];
+const MEMBER_ALBUM = [0, 3, 2, 6, 8];
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const initials = (n) => n.replace(/[^A-Za-z ]/g, '').split(' ').map((w) => w[0]).join('').slice(0, 2);
@@ -19,6 +34,7 @@ const VIEWS = {
             <div class="tl-body">
               <h3>${esc(e.title)}</h3>
               <p>${esc(e.text)}</p>
+              ${plateFor(e.album, ['', 'b', 'c'][i % 3]) ? `<img class="tl-thumb" src="${plateFor(e.album, ['', 'b', 'c'][i % 3])}" alt="" loading="lazy">` : ''}
               <button type="button" class="chip" data-album="${e.album}">VIEW ${esc(ALBUMS[e.album].title)} &rarr;</button>
             </div>
           </li>`).join('')}
@@ -29,7 +45,7 @@ const VIEWS = {
     render: () => `
       <div class="grid members">
         ${BAND.map((m, i) => `
-          <article class="member" style="--c:${accent([0, 3, 2, 6, 8][i])};--i:${i}">
+          <article class="member" style="--c:${accent(MEMBER_ALBUM[i])};--i:${i};--img:url('${plateFor(MEMBER_ALBUM[i], 'c') || ''}')">
             <div class="mono" aria-hidden="true">${initials(m.name)}</div>
             <h3>${esc(m.name)}</h3>
             <div class="role">${esc(m.role)} · b. ${m.born}</div>
@@ -49,7 +65,8 @@ const VIEWS = {
     render: () => `
       <div class="stories">
         ${STORIES.map((s, i) => `
-          <article class="story" style="--c:${accent(i)};--i:${i}">
+          <article class="story" style="--c:${accent(STORY_ALBUM[i])};--i:${i}">
+            ${plateFor(STORY_ALBUM[i], 'c') ? `<img class="story-img" src="${plateFor(STORY_ALBUM[i], 'c')}" alt="" loading="lazy">` : ''}
             <div class="tag">${esc(s.tag)}</div>
             <h3>${esc(s.title)}</h3>
             <p>${esc(s.text)}</p>
@@ -59,16 +76,21 @@ const VIEWS = {
   gallery: {
     title: 'GALLERY', sub: 'PLATES · PHOTOGRAPHS',
     render: () => `
-      <h2 class="sub-h">PARTICLE PLATES <small>original generative artwork, one per album</small></h2>
+      <h2 class="sub-h">PARTICLE PLATES <small>${PLATES.length} original generative artworks \u00B7 click to enlarge</small></h2>
       <div class="plates">
-        ${PLATES.map((src, i) => `
-          <figure class="plate" style="--c:${accent(i)};--i:${i}">
-            <button type="button" class="plate-btn" data-plate="${i}" aria-label="Enlarge plate ${i + 1}: ${esc(ALBUMS[i].title)}"><img src="${src}" alt="Generative particle plate for ${esc(ALBUMS[i].title)}" loading="lazy"></button>
-            <figcaption><b>${String(i + 1).padStart(2, '0')}</b> ${esc(ALBUMS[i].title)} <span>${ALBUMS[i].year}</span></figcaption>
+        ${PLATES.map((p, i) => `
+          <figure class="plate" style="--c:${accent(p.album)};--i:${Math.min(i, 14)}">
+            <button type="button" class="plate-btn" data-plate="${i}" aria-label="Enlarge ${esc(ALBUMS[p.album].title)} plate, ${VIEW_NAME[p.view].toLowerCase()}"><img src="${p.src}" alt="Generative particle plate for ${esc(ALBUMS[p.album].title)}, ${VIEW_NAME[p.view].toLowerCase()} view" loading="lazy"></button>
+            <figcaption><b>${String(p.album + 1).padStart(2, '0')}</b> ${esc(ALBUMS[p.album].title)} <span>${VIEW_NAME[p.view]}</span></figcaption>
           </figure>`).join('') || '<p class="empty">Plates are generated when the site is built.</p>'}
       </div>
-      <h2 class="sub-h">PHOTOGRAPHS <small>free-licence images from Wikimedia Commons</small></h2>
+      <h2 class="sub-h">PHOTOGRAPHS <small>your own photos, plus free-licence images from Wikimedia Commons</small></h2>
       <div class="photos">
+        ${LOCAL_PHOTOS.map((p, i) => `
+          <figure class="photo" style="--i:${i}">
+            <div class="photo-frame"><img src="${p.src}" alt="${esc(p.caption)}" loading="lazy"></div>
+            <figcaption>${esc(p.caption)}<span>From this archive</span></figcaption>
+          </figure>`).join('')}
         ${PHOTOS.map((p, i) => `
           <figure class="photo" style="--i:${i}">
             <div class="photo-frame">
