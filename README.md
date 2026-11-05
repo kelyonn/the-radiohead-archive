@@ -34,6 +34,10 @@ npm run build    # static site in dist/ (relative paths, works on GitHub Pages)
 
 A workflow in `.github/workflows/pages.yml` builds and publishes `dist/` on every push to `main`. Enable it once under **Settings → Pages → Source: GitHub Actions**.
 
+## Deploy (Vercel)
+
+`vercel.json` is included, so deploying is zero-config: on vercel.com choose **Add New → Project**, import this repository, and press **Deploy**. Vercel detects Vite and publishes `dist/`; every push to `main` redeploys.
+
 ## What's inside
 
 - **Particle engine** (`src/stage.js`, `src/shaders.js`) — all morphing, flow-field noise, pointer repulsion, shockwaves and audio reactivity run in the vertex shader. Scroll position *is* the morph amount, so it is fully scrubbable and reversible.
