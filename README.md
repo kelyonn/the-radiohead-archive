@@ -1,104 +1,167 @@
-# The Radiohead Archive
+<p align="center">
+  <img src="docs/readme/banner.svg" width="100%" alt="The Radiohead Archive">
+</p>
 
-An interactive WebGL tribute to Radiohead's nine studio albums. A single GPU particle cloud is sculpted into a different 3D form for each record, and scrolling dissolves one era into the next.
+<p align="center">
+  <img src="docs/readme/hero.webp" width="100%" alt="Nine Radiohead albums, each rendered as a different shape made of light, dissolving into the next">
+</p>
 
-Each album has its own colour palette, tracklist, short mood note and a generative soundscape synthesised in the browser. Around the main view sit an in-site player, a timeline, a band profile page and a set of short stories.
+<p align="center">
+  <b>Nine albums. One cloud of light. Scroll, and it becomes the next record.</b><br>
+  <sub>Every Radiohead studio album, from Pablo Honey to A Moon Shaped Pool, reimagined as a living shape with a sound of its own.</sub>
+</p>
 
-> Unofficial fan project, with no affiliation to Radiohead. No recordings are hosted. All audio is synthesised in your browser, and photographs are free-licence images from Wikimedia Commons.
+<p align="center">
+  <sub><a href="#01--the-idea">THE IDEA</a> &nbsp;·&nbsp; <a href="#02--the-nine">THE NINE</a> &nbsp;·&nbsp; <a href="#03--how-to-move-through-it">HOW TO MOVE THROUGH IT</a> &nbsp;·&nbsp; <a href="#04--run-it">RUN IT</a> &nbsp;·&nbsp; <a href="#05--under-the-hood">UNDER THE HOOD</a> &nbsp;·&nbsp; <a href="#06--credits-and-license">CREDITS</a></sub>
+</p>
 
-## Contents
+<br>
 
-- [Features](#features)
-- [Getting started](#getting-started)
-- [Controls](#controls)
-- [Visual modes](#visual-modes)
-- [How it works](#how-it-works)
-- [Project structure](#project-structure)
-- [Deployment](#deployment)
-- [Photo credits](#photo-credits)
-- [License](#license)
+## 01 · The idea
 
-## Features
+Most music archives are lists. This one is a place.
 
-- **Nine morphing sculptures.** Noisy sphere, double helix, wireframe motorway, faceted ice terrain, (3,5) torus knot, Lorenz attractor, spectrum arcs, recursive tree and a crescent moon over water. Scroll position is the morph amount, so the transition is fully scrubbable and reversible.
-- **Generative audio.** Nine Web Audio patches built from sequencers, FM synthesis, filtered noise and generated reverb, crossfaded as you move between albums.
-- **Focused main screen.** Title, year, a one-line mood and a short note. Producer, label, a suggested first track and the full tracklist sit in a collapsible dropdown.
-- **In-site player.** Uses Spotify's official embed and follows the album you are viewing. Sign in there for full tracks; otherwise you get previews.
-- **Timeline, Band and Stories.** Twenty timeline entries from 1985 to today, five band members plus two key collaborators, and nine short original reads, each illustrated with a credited photograph.
-- **Adaptive and accessible.** Particle count and pixel ratio scale to hold a steady frame rate, mobile gets a lighter budget, `prefers-reduced-motion` is respected, and a lite mode appears when WebGL is unavailable.
+Ninety thousand points of light hang in the dark. On each album they hold a new form: a scorched sphere for the debut, a double helix for The Bends, a motorway at night for OK Computer, a frozen ridge for Kid A. Scroll, and the shape comes apart and drifts into the next one, so you travel through the band's history the way you would listen to it, one era turning into another.
 
-## Getting started
+Each record also gets its own colours, its own short mood note, and its own soundscape, generated live in your browser as you arrive.
 
-Requires Node 18 or newer.
+<br>
+
+## 02 · The nine
+
+<table>
+  <tr>
+    <td width="33%" valign="top">
+      <img src="docs/readme/album-1.jpg" alt="Pablo Honey: a rough orange sphere of light"><br>
+      <sub><b>01 &nbsp; PABLO HONEY</b> &nbsp; 1993</sub><br>
+      <sub>Loud, raw, still finding itself.<br>A noisy sphere, overdriven and unsure.</sub>
+    </td>
+    <td width="33%" valign="top">
+      <img src="docs/readme/album-2.jpg" alt="The Bends: a red and white double helix"><br>
+      <sub><b>02 &nbsp; THE BENDS</b> &nbsp; 1995</sub><br>
+      <sub>Big guitars, bare nerves.<br>A double helix, a pulse under pressure.</sub>
+    </td>
+    <td width="33%" valign="top">
+      <img src="docs/readme/album-3.jpg" alt="OK Computer: a blue motorway of light streaks"><br>
+      <sub><b>03 &nbsp; OK COMPUTER</b> &nbsp; 1997</sub><br>
+      <sub>Anxiety at the speed of the nineties.<br>A wireframe motorway to a vanishing point.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <img src="docs/readme/album-4.jpg" alt="Kid A: a pale, jagged ridge of ice"><br>
+      <sub><b>04 &nbsp; KID A</b> &nbsp; 2000</sub><br>
+      <sub>Cold, electronic, deliberately different.<br>A faceted field of ice.</sub>
+    </td>
+    <td width="33%" valign="top">
+      <img src="docs/readme/album-5.jpg" alt="Amnesiac: a green knot looping through itself"><br>
+      <sub><b>05 &nbsp; AMNESIAC</b> &nbsp; 2001</sub><br>
+      <sub>Kid A's darker, stranger twin.<br>A knot that keeps returning to itself.</sub>
+    </td>
+    <td width="33%" valign="top">
+      <img src="docs/readme/album-6.jpg" alt="Hail to the Thief: a butterfly-shaped chaotic attractor"><br>
+      <sub><b>06 &nbsp; HAIL TO THE THIEF</b> &nbsp; 2003</sub><br>
+      <sub>Fast, restless, politically jumpy.<br>Chaos, mapped as a strange attractor.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" valign="top">
+      <img src="docs/readme/album-7.jpg" alt="In Rainbows: concentric arcs in rainbow colours"><br>
+      <sub><b>07 &nbsp; IN RAINBOWS</b> &nbsp; 2007</sub><br>
+      <sub>Warm, rhythmic, full of colour.<br>A full spectrum of arcs.</sub>
+    </td>
+    <td width="33%" valign="top">
+      <img src="docs/readme/album-8.jpg" alt="The King of Limbs: a glowing branching tree"><br>
+      <sub><b>08 &nbsp; THE KING OF LIMBS</b> &nbsp; 2011</sub><br>
+      <sub>Short, looped, organic.<br>A tree grown from repeating patterns.</sub>
+    </td>
+    <td width="33%" valign="top">
+      <img src="docs/readme/album-9.jpg" alt="A Moon Shaped Pool: a pale moon above rippling rings of water"><br>
+      <sub><b>09 &nbsp; A MOON SHAPED POOL</b> &nbsp; 2016</sub><br>
+      <sub>Quiet, deep, orchestral.<br>A moon over still, rippling water.</sub>
+    </td>
+  </tr>
+</table>
+
+<sub>Every image above is a real, unedited frame from the site.</sub>
+
+<br>
+
+## 03 · How to move through it
+
+| To | Do this |
+| --- | --- |
+| **Travel between albums** | Scroll, swipe, or use the arrow keys |
+| **Jump straight to one** | Press `1` to `9`, or pick it from the side rail |
+| **Disturb the light** | Move your pointer through the cloud |
+| **Send a shockwave** | Click anywhere, or click a track title to hear a note |
+| **Listen properly** | Press Listen Here to play the album in an in-site player |
+| **Let the music lead** | Switch Calm to Reactive, and the cloud pulses with the sound |
+| **Read deeper** | Timeline, Band and Stories, each with photographs from the era |
+
+<br>
+
+## 04 · Run it
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm run build      # static site in dist/
-npm run preview    # serve the production build locally
+npm run dev
 ```
 
-## Controls
+Then open `http://localhost:5173`. Headphones recommended.
 
-| Action | Input |
-| --- | --- |
-| Next or previous album | Scroll, swipe, arrow keys, `Space`, the side rail, or the on-screen arrows on mobile |
-| Jump to an album | `1` to `9`, or click it in the rail. Links such as `#kid-a` also work |
-| Play a tone and send a shockwave | Click a track, or click empty space |
-| Push the particles | Move the pointer |
-| Mute or unmute | `M`, or the Sound button |
-| Switch visual mode | The Calm / Reactive button in the header |
+`npm run build` produces a static site in `dist/` that runs anywhere, including GitHub Pages and Vercel, both already configured.
 
-## Visual modes
+<br>
 
-The default **Calm** look is the same with sound on or off. **Reactive** lets the music drive the visuals, with the cloud pulsing and glowing to the bass at a reduced strength and brightness. The choice is remembered between visits.
+## 05 · Under the hood
 
-## How it works
+<details>
+<summary><b>How the light works</b></summary>
+<br>
 
-- **Particle engine** (`src/scene/stage.js`, `src/scene/shaders.js`). Morphing, flow-field noise, pointer repulsion, shockwaves and audio response all run in the vertex shader.
-- **Sculptures** (`src/scene/shapes.js`). Procedural generators produce one static position buffer per album.
-- **Post-processing.** Bloom, chromatic aberration, scroll-velocity glitch, grain, scanlines, vignette and ACES tone mapping.
-- **Audio** (`src/audio.js`). Web Audio only, with no samples. An analyser feeds the Reactive mode.
-- **Interface** (`src/ui/ui.js`, `src/ui/sheets.js`). Plain DOM, with no framework.
+A single GPU particle cloud of up to 120,000 points is shared by every album. Each album's shape is generated procedurally at load and uploaded as a static buffer, and the vertex shader blends between neighbouring shapes using the scroll position, so the morph is fully scrubbable in both directions. Flow-field noise, pointer repulsion and click shockwaves are applied in the same pass.
 
-Stack: Vite, Three.js, vanilla ES modules, and bundled fonts (Anton, Space Mono).
+The frame is finished with bloom, chromatic aberration, a scroll-speed glitch, film grain, scanlines and a vignette. Quality adapts automatically to hold a steady frame rate, phones get a lighter budget, reduced-motion preferences are respected, and a lite mode takes over if WebGL is unavailable.
+</details>
 
-## Project structure
+<details>
+<summary><b>How the sound works</b></summary>
+<br>
+
+There are no recordings in this project. Each album has its own patch built entirely from the Web Audio API: step sequencers, FM synthesis, filtered noise and a generated reverb, crossfaded as you move between eras. In Reactive mode an analyser feeds the bass, mids and highs back into the visuals.
+</details>
+
+<details>
+<summary><b>Project layout</b></summary>
+<br>
 
 ```
-index.html              Page shell and HUD markup
-style.css               All styling
-vite.config.js          Build config
-vite.single.config.js   Optional single-file build
+index.html              page shell and interface markup
+style.css               all styling
 src/
-  main.js               Boot, input, render loop
-  audio.js              Generative soundscapes (Web Audio)
-  scene/
-    stage.js            Three.js scene and post-processing
-    shaders.js          Particle, background and post shaders
-    shapes.js           Sculpture generators
-  data/
-    data.js             Album data: tracks, palettes, mood notes
-    content.js          Timeline, band and story text
-    pics.js             Photo credit manifest
-  ui/
-    ui.js               Main-screen interface
-    sheets.js           Timeline, Band and Stories sheets, and the player
-  assets/pics/          Locally stored photographs
+  main.js               boot, input and render loop
+  audio.js              generative soundscapes
+  scene/                particle stage, shaders, the nine shape generators
+  data/                 albums, timeline, band, stories, photo credits
+  ui/                   main screen, sheets and player
+  assets/pics/          locally stored photographs
+docs/readme/            images used in this README
 ```
 
-## Deployment
+Built with Three.js and Vite. No framework.
+</details>
 
-**GitHub Pages.** The workflow in `.github/workflows/pages.yml` builds and publishes `dist/` on every push to `main`. Enable it once under Settings, Pages, Source: GitHub Actions.
+<br>
 
-**Vercel.** `vercel.json` is included. Import the repository as a new project and deploy; Vercel detects Vite and redeploys on every push to `main`.
+## 06 · Credits and license
 
-The build uses relative paths, so it also works from a sub-path.
+Photographs in Timeline, Band and Stories come from Wikimedia Commons under free licences. Hover any image on the site for its author and source, or see `src/data/pics.js`.
 
-## Photo credits
+This is an unofficial fan project with no affiliation to Radiohead. Band and album names belong to their owners and are used only to identify the music.
 
-All photographs are from Wikimedia Commons under free licences (CC0, CC BY, CC BY-SA). Hover any image on the site for its author, licence and a link to the original file page. The full list is in `src/data/pics.js`.
+Copyright (c) 2026 Kalyan. All rights reserved. The code and writing in this repository may not be copied, modified or redistributed without written permission. Third-party photographs and dependencies keep their own licences. See [LICENSE](LICENSE).
 
-## License
+<br>
 
-Copyright (c) 2026 Kalyan. All rights reserved. The code and written content may not be copied, modified, redistributed or reused without written permission; see [LICENSE](LICENSE). Third-party photographs and dependencies keep their own licenses, and Radiohead names and album titles belong to their owners and are used for identification only.
+<p align="center"><sub>Made by a fan, for anyone who has ever lost an afternoon to these records.</sub></p>
