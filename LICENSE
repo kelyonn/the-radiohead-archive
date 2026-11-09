@@ -1,0 +1,22 @@
+Copyright (c) 2026 Kalyan. All rights reserved.
+
+This repository, including its source code, written content, data, styling and
+build configuration (the "Work"), is proprietary. No license or permission is
+granted to any person to copy, reproduce, modify, merge, publish, distribute,
+sublicense, sell, host, or create derivative works from the Work, in whole or in
+part, in any form, without prior written permission from the copyright holder.
+
+Viewing the Work in this repository is permitted. Any other use requires a
+written agreement.
+
+Third-party materials are not covered by this notice and remain under their own
+licenses and terms:
+
+- Photographs in src/assets/pics are from Wikimedia Commons and remain under the
+  licenses and attributions listed in src/data/pics.js.
+- Dependencies (Three.js, Vite, and the Anton and Space Mono fonts) remain under
+  their respective licenses.
+- Radiohead names, album titles and related marks belong to their respective
+  owners and are used for identification only. This is an unofficial fan project.
+
+THE WORK IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
