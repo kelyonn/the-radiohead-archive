@@ -33,9 +33,9 @@ export class UI {
     this.el = {
       track: $('track'), rail: $('rail'), title: $('title'), year: $('year'), blurb: $('blurb'),
       producer: $('m-producer'), label: $('m-label'), tracks: $('tracks'), idx: $('idx-cur'),
-      code: $('codename'), count: $('count'), log: $('log'), info: $('info'), toggle: $('tracks-toggle'),
+      mood: $('mood'), start: $('m-start'), toggleLabel: $('tracks-toggle-label'), info: $('info'), toggle: $('tracks-toggle'),
       sound: $('sound'), soundLabel: $('sound-label'), meter: $('meter'), clock: $('clock'),
-      coords: $('coords'), cursor: $('cursor'),
+      cursor: $('cursor'),
     };
     this.bars = [...this.el.meter.children];
     try { this.service = localStorage.getItem('rha-service') || 'spotify'; } catch (_) { this.service = 'spotify'; }
@@ -83,9 +83,7 @@ export class UI {
     $('next').addEventListener('click', () => this.h.onNavigate(this.index + 1));
     el.sound.addEventListener('click', () => this.h.onSound());
     el.toggle.addEventListener('click', () => {
-      const open = el.info.classList.toggle('open');
-      el.toggle.setAttribute('aria-expanded', open);
-      el.toggle.querySelector('b').textContent = open ? '–' : '+';
+      this._setOpen(!el.info.classList.contains('open'));
     });
 
     // pointer cursor + coords
@@ -100,6 +98,12 @@ export class UI {
     this._cx = this._cy = -100; this._px = this._py = 0;
   }
 
+  _setOpen(open) {
+    this.el.info.classList.toggle('open', open);
+    this.el.toggle.setAttribute('aria-expanded', String(open));
+    this.el.toggle.querySelector('b').textContent = open ? '\u2013' : '+';
+  }
+
   /** Called every frame. */
   frame(dt, { bands, progress, ndc, elapsed, audioOn }) {
     // smooth custom cursor
@@ -107,8 +111,7 @@ export class UI {
     this._py += (this._cy - this._py) * Math.min(1, dt * 18);
     this.el.cursor.style.transform = `translate(${this._px}px, ${this._py}px)`;
 
-    // coords + clock
-    this.el.coords.textContent = `X ${ndc.x >= 0 ? '+' : ''}${ndc.x.toFixed(2)}  Y ${ndc.y >= 0 ? '+' : ''}${ndc.y.toFixed(2)}`;
+    // clock
     const s = Math.floor(elapsed);
     this.el.clock.textContent = `T+${pad2(Math.floor(s / 3600))}:${pad2(Math.floor((s % 3600) / 60))}:${pad2(s % 60)}`;
 
@@ -171,11 +174,13 @@ export class UI {
       el.title.classList.remove('out');
       el.title.setAttribute('aria-label', a.title);
 
+      this._setOpen(false);
+      el.mood.textContent = a.mood;
       el.blurb.textContent = a.blurb;
+      el.start.textContent = a.start;
       el.producer.textContent = a.producer;
       el.label.textContent = a.label;
       el.blurb.classList.remove('fade-in'); void el.blurb.offsetWidth; el.blurb.classList.add('fade-in');
-      el.info.querySelector('.meta').classList.remove('fade-in'); void el.blurb.offsetWidth; el.info.querySelector('.meta').classList.add('fade-in');
 
       el.tracks.innerHTML = '';
       a.tracks.forEach((t, k) => {
@@ -184,6 +189,7 @@ export class UI {
         li.style.setProperty('--i', k);
         const name = document.createElement('span');
         name.className = 'tn'; name.textContent = t;
+        if (t === a.start) li.classList.add('start');
         const play = document.createElement('button');
         play.type = 'button'; play.className = 'play'; play.textContent = '\u25B6'; play.dataset.track = t;
         play.setAttribute('aria-label', `Open player for ${a.title}`);
@@ -200,30 +206,13 @@ export class UI {
 
       scramble(el.idx, pad2(i + 1), 500);
       scramble(el.year, String(a.year), 650);
-      scramble(el.code, a.codename, 900);
-      el.count.textContent = `${a.tracks.length} TRACKS`;
+      el.toggleLabel.textContent = `TRACKLIST \u00B7 ${a.tracks.length}`;
       this._links();
-      this._typeLog(a.log);
     };
 
     if (first) { render(); return; }
     el.title.classList.add('out');
     clearTimeout(this._swap);
     this._swap = setTimeout(render, 240);
-  }
-
-  _typeLog(lines) {
-    const log = this.el.log;
-    clearTimeout(this._logT);
-    log.innerHTML = '';
-    let li = 0, ci = 0, row = null;
-    const tick = () => {
-      if (li >= lines.length) { return; }
-      if (!row) { row = document.createElement('div'); row.className = 'caret'; log.appendChild(row); }
-      row.textContent = lines[li].slice(0, ++ci);
-      if (ci >= lines[li].length) { row.classList.remove('caret'); row = null; li++; ci = 0; this._logT = setTimeout(tick, 220); }
-      else this._logT = setTimeout(tick, 16);
-    };
-    this._logT = setTimeout(tick, 400);
   }
 }
