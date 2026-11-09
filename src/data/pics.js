@@ -1,5 +1,5 @@
 // Free-licence photographs from Wikimedia Commons, stored locally. Credits link to each file page.
-const files = import.meta.glob('./assets/pics/*.jpg', { eager: true, query: '?url', import: 'default' });
+const files = import.meta.glob('../assets/pics/*.jpg', { eager: true, query: '?url', import: 'default' });
 export const CREDITS = {
  "abingdon": {
   "file": "Abingdon School, Abingdon, Oxfordshire, England-23April2011.jpg",
@@ -200,4 +200,4 @@ export const CREDITS = {
   "page": "https://commons.wikimedia.org/wiki/File:Jonny_Greenwood_in_Amsterdam.jpg"
  }
 };
-export const pic = (slug) => files[`./assets/pics/${slug}.jpg`];
+export const pic = (slug) => files[`../assets/pics/${slug}.jpg`];

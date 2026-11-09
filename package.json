@@ -2,6 +2,7 @@
   "name": "the-radiohead-archive",
   "version": "2.0.0",
   "private": true,
+  "license": "UNLICENSED",
   "type": "module",
   "description": "Interactive WebGL archive of Radiohead's studio albums",
   "scripts": {

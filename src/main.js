@@ -1,10 +1,10 @@
 import '../style.css';
-import { ALBUMS } from './data.js';
-import { SHAPES } from './shapes.js';
-import { Stage } from './stage.js';
+import { ALBUMS } from './data/data.js';
+import { SHAPES } from './scene/shapes.js';
+import { Stage } from './scene/stage.js';
 import { AudioEngine } from './audio.js';
-import { UI } from './ui.js';
-import { Sheets, Player } from './sheets.js';
+import { UI } from './ui/ui.js';
+import { Sheets, Player } from './ui/sheets.js';
 
 const N = ALBUMS.length;
 const mobile = matchMedia('(pointer: coarse)').matches || Math.min(innerWidth, innerHeight) < 600;

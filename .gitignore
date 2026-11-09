@@ -23,3 +23,6 @@ dist-ssr/
 # OS
 Thumbs.db
 dist-single/
+
+# Claude Code local config
+.claude/

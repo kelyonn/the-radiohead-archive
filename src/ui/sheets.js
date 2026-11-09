@@ -1,6 +1,6 @@
-import { ALBUMS } from './data.js';
-import { TIMELINE, BAND, COLLABORATORS, STORIES } from './content.js';
-import { CREDITS, pic } from './pics.js';
+import { ALBUMS } from '../data/data.js';
+import { TIMELINE, BAND, COLLABORATORS, STORIES } from '../data/content.js';
+import { CREDITS, pic } from '../data/pics.js';
 
 const STORY_ALBUM = [0, 0, 2, 2, 3, 4, 6, 8, 2];
 const figure = (slug, cls) => {
