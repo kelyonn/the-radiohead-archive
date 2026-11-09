@@ -34,6 +34,8 @@ export class Stage {
     this.bass = 0; this.mid = 0; this.high = 0;
     this.pixelRatioCap = mobile ? 1.5 : 2;
     this.quality = 1;
+    this.reactive = false; // false: audio does not alter visuals (same calm look as silent)
+    this._react = 0;
 
     this.renderer = new THREE.WebGLRenderer({
       antialias: false, // MSAA is wasted on additive point sprites
@@ -194,6 +196,9 @@ export class Stage {
   }
 
   setAudio(bass, mid, high) {
+    // Reactive mode: audio drives the visuals, at reduced strength. Otherwise the look matches silent.
+    const k = this.reactive ? 0.5 : 0;
+    bass *= k; mid *= k; high *= k;
     this.bass = damp(this.bass, bass, bass > this.bass ? 28 : 7, this._dt || 0.016);
     this.mid = damp(this.mid, mid, 14, this._dt || 0.016);
     this.high = damp(this.high, high, 14, this._dt || 0.016);
@@ -321,7 +326,9 @@ export class Stage {
     fu.uTime.value = this.time;
     fu.uGlitch.value = glitch;
     fu.uAberration.value = 0.0012 + this.bass * 0.004 + glitch * 0.004;
-    this.bloom.strength = (this.mobile ? 0.55 : 0.7) + this.bass * 0.5 + glitch * 0.3;
+    this._react = damp(this._react, this.reactive ? 1 : 0, 3, dt);
+    this.bloom.strength = (this.mobile ? 0.55 : 0.7) * (1 - 0.4 * this._react) + this.bass * 0.5 + glitch * 0.3;
+    this.renderer.toneMappingExposure = 1.15 - 0.35 * this._react;
 
     this.composer.render(dt);
   }

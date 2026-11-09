@@ -67,6 +67,14 @@ async function boot() {
   });
   ui.setAlbum(hashIndex());
   ui.setSound(false, false);
+  const modeBtn = document.getElementById('mode');
+  const setMode = (reactive) => {
+    modeBtn.setAttribute('aria-pressed', String(reactive));
+    document.getElementById('mode-label').textContent = reactive ? 'REACTIVE' : 'CALM';
+    if (stage) stage.reactive = reactive;
+    try { localStorage.setItem('rha-reactive', reactive ? '1' : '0'); } catch (_) {}
+  };
+  modeBtn.addEventListener('click', () => setMode(modeBtn.getAttribute('aria-pressed') !== 'true'));
 
   setLoad(4, 'CREATING WEBGL CONTEXT');
   const count = mobile ? 42000 : innerWidth > 1800 ? 120000 : 90000;
@@ -78,6 +86,7 @@ async function boot() {
     setLoad(100, 'WEBGL UNAVAILABLE — RUNNING IN LITE MODE');
   }
 
+  try { setMode(localStorage.getItem('rha-reactive') === '1'); } catch (_) {}
   if (stage) {
     const shapes = [];
     for (let i = 0; i < N; i++) {
