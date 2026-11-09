@@ -1,26 +1,16 @@
 import { ALBUMS } from './data.js';
-import { TIMELINE, BAND, COLLABORATORS, STORIES, PHOTOS } from './content.js';
-
-const plateFiles = import.meta.glob('./assets/plates/*.jpg', { eager: true, query: '?url', import: 'default' });
-const VIEW_ORDER = { '': 0, b: 1, c: 2 };
-const VIEW_NAME = { '': 'FRONT', b: 'ORBIT', c: 'CLOSE-UP' };
-const PLATES = Object.keys(plateFiles).map((k) => {
-  const m = k.match(/(\d+)(?:_([a-z]))?\.jpg$/);
-  return { src: plateFiles[k], album: +m[1] - 1, view: m[2] || '' };
-}).sort((a, b) => a.album - b.album || VIEW_ORDER[a.view] - VIEW_ORDER[b.view]);
-const plateFor = (album, view) => (PLATES.find((p) => p.album === album && p.view === view) || PLATES.find((p) => p.album === album))?.src;
-
-const photoFiles = import.meta.glob('./assets/photos/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}', { eager: true, query: '?url', import: 'default' });
-const LOCAL_PHOTOS = Object.keys(photoFiles).sort().map((k) => ({
-  src: photoFiles[k],
-  caption: k.split('/').pop().replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '),
-}));
+import { TIMELINE, BAND, COLLABORATORS, STORIES } from './content.js';
+import { CREDITS, pic } from './pics.js';
 
 const STORY_ALBUM = [0, 0, 2, 2, 3, 4, 6, 8, 2];
+const figure = (slug, cls) => {
+  const src = pic(slug), cr = CREDITS[slug];
+  if (!src) return '';
+  return `<figure class="${cls}"><img src="${src}" alt="" loading="lazy" decoding="async"><figcaption><a href="${cr.page}" target="_blank" rel="noopener noreferrer">${esc(cr.artist)} · ${esc(cr.license)}</a></figcaption></figure>`;
+};
 const MEMBER_ALBUM = [0, 3, 2, 6, 8];
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const initials = (n) => n.replace(/[^A-Za-z ]/g, '').split(' ').map((w) => w[0]).join('').slice(0, 2);
 const accent = (i) => ALBUMS[Math.min(ALBUMS.length - 1, Math.max(0, i))].palette[0];
 
 const VIEWS = {
@@ -34,7 +24,7 @@ const VIEWS = {
             <div class="tl-body">
               <h3>${esc(e.title)}</h3>
               <p>${esc(e.text)}</p>
-              ${plateFor(e.album, ['', 'b', 'c'][i % 3]) ? `<img class="tl-thumb" src="${plateFor(e.album, ['', 'b', 'c'][i % 3])}" alt="" loading="lazy">` : ''}
+              ${figure(e.img, 'tl-pic')}
               <button type="button" class="chip" data-album="${e.album}">VIEW ${esc(ALBUMS[e.album].title)} &rarr;</button>
             </div>
           </li>`).join('')}
@@ -45,8 +35,8 @@ const VIEWS = {
     render: () => `
       <div class="grid members">
         ${BAND.map((m, i) => `
-          <article class="member" style="--c:${accent(MEMBER_ALBUM[i])};--i:${i};--img:url('${plateFor(MEMBER_ALBUM[i], 'c') || ''}')">
-            <div class="mono" aria-hidden="true">${initials(m.name)}</div>
+          <article class="member" style="--c:${accent(MEMBER_ALBUM[i])};--i:${i}">
+            ${figure(m.img, 'member-pic')}
             <h3>${esc(m.name)}</h3>
             <div class="role">${esc(m.role)} · b. ${m.born}</div>
             <p>${esc(m.text)}</p>
@@ -56,7 +46,7 @@ const VIEWS = {
       <div class="grid collabs">
         ${COLLABORATORS.map((m, i) => `
           <article class="member small" style="--c:${accent(2 + i * 3)};--i:${i}">
-            <h3>${esc(m.name)}</h3><div class="role">${esc(m.role)}</div><p>${esc(m.text)}</p>
+            ${figure(m.img, 'member-pic')}<h3>${esc(m.name)}</h3><div class="role">${esc(m.role)}</div><p>${esc(m.text)}</p>
           </article>`).join('')}
       </div>`,
   },
@@ -66,39 +56,11 @@ const VIEWS = {
       <div class="stories">
         ${STORIES.map((s, i) => `
           <article class="story" style="--c:${accent(STORY_ALBUM[i])};--i:${i}">
-            ${plateFor(STORY_ALBUM[i], 'c') ? `<img class="story-img" src="${plateFor(STORY_ALBUM[i], 'c')}" alt="" loading="lazy">` : ''}
+            ${figure(s.img, 'story-pic')}
             <div class="tag">${esc(s.tag)}</div>
             <h3>${esc(s.title)}</h3>
             <p>${esc(s.text)}</p>
           </article>`).join('')}
-      </div>`,
-  },
-  gallery: {
-    title: 'GALLERY', sub: 'PLATES · PHOTOGRAPHS',
-    render: () => `
-      <h2 class="sub-h">PARTICLE PLATES <small>${PLATES.length} original generative artworks \u00B7 click to enlarge</small></h2>
-      <div class="plates">
-        ${PLATES.map((p, i) => `
-          <figure class="plate" style="--c:${accent(p.album)};--i:${Math.min(i, 14)}">
-            <button type="button" class="plate-btn" data-plate="${i}" aria-label="Enlarge ${esc(ALBUMS[p.album].title)} plate, ${VIEW_NAME[p.view].toLowerCase()}"><img src="${p.src}" alt="Generative particle plate for ${esc(ALBUMS[p.album].title)}, ${VIEW_NAME[p.view].toLowerCase()} view" loading="lazy"></button>
-            <figcaption><b>${String(p.album + 1).padStart(2, '0')}</b> ${esc(ALBUMS[p.album].title)} <span>${VIEW_NAME[p.view]}</span></figcaption>
-          </figure>`).join('') || '<p class="empty">Plates are generated when the site is built.</p>'}
-      </div>
-      <h2 class="sub-h">PHOTOGRAPHS <small>your own photos, plus free-licence images from Wikimedia Commons</small></h2>
-      <div class="photos">
-        ${LOCAL_PHOTOS.map((p, i) => `
-          <figure class="photo" style="--i:${i}">
-            <div class="photo-frame"><img src="${p.src}" alt="${esc(p.caption)}" loading="lazy"></div>
-            <figcaption>${esc(p.caption)}<span>From this archive</span></figcaption>
-          </figure>`).join('')}
-        ${PHOTOS.map((p, i) => `
-          <figure class="photo" style="--i:${i}">
-            <div class="photo-frame">
-              <img src="https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(p.file)}?width=900" alt="${esc(p.caption)}" loading="lazy" referrerpolicy="no-referrer">
-              <div class="photo-fallback">Photo loads from Wikimedia Commons</div>
-            </div>
-            <figcaption>${esc(p.caption)}<span>${esc(p.license)} · <a href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(p.file)}" target="_blank" rel="noopener noreferrer">credit &amp; file page</a></span></figcaption>
-          </figure>`).join('')}
       </div>`,
   },
 };
@@ -110,7 +72,6 @@ export class Sheets {
     this.titleEl = document.getElementById('sheet-title');
     this.subEl = document.getElementById('sheet-sub');
     this.body = document.getElementById('sheet-body');
-    this.light = document.getElementById('lightbox');
     this.current = null;
 
     document.getElementById('sheet-close').addEventListener('click', () => this.close());
@@ -118,14 +79,7 @@ export class Sheets {
     this.body.addEventListener('click', (e) => {
       const chip = e.target.closest('[data-album]');
       if (chip) { const i = +chip.dataset.album; this.close(); this.onAlbum(i); return; }
-      const plate = e.target.closest('[data-plate]');
-      if (plate) this.zoom(+plate.dataset.plate);
     });
-    // broken remote images fall back to a designed placeholder
-    this.body.addEventListener('error', (e) => {
-      if (e.target.tagName === 'IMG' && e.target.closest('.photo-frame')) e.target.closest('.photo-frame').classList.add('failed');
-    }, true);
-    this.light.addEventListener('click', () => this.light.classList.remove('open'));
     document.querySelectorAll('[data-sheet]').forEach((b) =>
       b.addEventListener('click', () => { this.open(b.dataset.sheet); document.getElementById('menu')?.classList.remove('open'); }));
     this.bindFocusTrap();
@@ -135,7 +89,7 @@ export class Sheets {
 
   bindFocusTrap() {
     this.root.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { e.stopPropagation(); this.light.classList.contains('open') ? this.light.classList.remove('open') : this.close(); }
+      if (e.key === 'Escape') { e.stopPropagation(); this.close(); }
     });
   }
 
@@ -161,17 +115,8 @@ export class Sheets {
     this.root.classList.remove('open');
     this.root.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('sheet-open');
-    this.light.classList.remove('open');
     this.opener?.focus?.({ preventScroll: true });
     this.onClose?.();
-  }
-
-  zoom(i) {
-    const img = this.light.querySelector('img');
-    img.src = PLATES[i];
-    img.alt = `${ALBUMS[i].title} plate`;
-    this.light.querySelector('figcaption').textContent = `${String(i + 1).padStart(2, '0')} — ${ALBUMS[i].title} (${ALBUMS[i].year})`;
-    this.light.classList.add('open');
   }
 }
 

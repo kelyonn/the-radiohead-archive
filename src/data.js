@@ -12,8 +12,9 @@ export const ALBUMS = [
     shape: 'noisy_sphere',
     palette: ['#e6e24a', '#ff9a1f', '#5a7a2a'],
     codename: 'SIGNAL_01 // RAW',
-    blurb:
-      'Five Oxford schoolfriends, loud guitars, and a single that escaped the room. Raw, overdriven and still unsure of itself — the blueprint before the rebuild.',
+    mood: 'Loud, raw, still finding itself',
+    blurb: 'Five Oxford friends, big guitars, and the single that got away.',
+    start: 'Creep',
     log: ['> LOADING EARLY_SESSIONS.DAT', '> GUITAR GAIN: EXCESSIVE', '> IDENTITY: UNRESOLVED'],
     tracks: [
       'You', 'Creep', 'How Do You?', 'Stop Whispering', 'Thinking About You', 'Anyone Can Play Guitar',
@@ -30,8 +31,9 @@ export const ALBUMS = [
     shape: 'helix',
     palette: ['#ff3347', '#3b7bff', '#ffd9a0'],
     codename: 'SIGNAL_02 // PULSE',
-    blurb:
-      'Stadium-sized guitars wrapped around real fragility. Fake plastic trees, hospital light, and a band discovering how much sound it could hold.',
+    mood: 'Big guitars, bare nerves',
+    blurb: 'Stadium sound with a fragile heart. The band learns how much it can hold.',
+    start: 'Fake Plastic Trees',
     log: ['> VITAL SIGNS: ELEVATED', '> STRUCTURE: DOUBLE HELIX', '> PRESSURE RISING'],
     tracks: [
       'Planet Telex', 'The Bends', 'High and Dry', 'Fake Plastic Trees', 'Bones', '(Nice Dream)',
@@ -48,8 +50,9 @@ export const ALBUMS = [
     shape: 'highway',
     palette: ['#59d6ff', '#e8f6ff', '#2a47ff'],
     codename: 'SIGNAL_03 // TRANSIT',
-    blurb:
-      'Airports, motorways, and a creeping sense that the machines were listening. A paranoid, widescreen portrait of the end of the millennium.',
+    mood: 'Anxiety at the speed of the nineties',
+    blurb: 'Airports, motorways and machines that listen. A widescreen portrait of the millennium.',
+    start: 'Paranoid Android',
     log: ['> SCANNING TRANSPORT MOTORWAY', '> STATUS: PARANOID', '> VANISHING POINT LOCKED'],
     tracks: [
       'Airbag', 'Paranoid Android', 'Subterranean Homesick Alien', 'Exit Music (For a Film)', 'Let Down',
@@ -66,8 +69,9 @@ export const ALBUMS = [
     shape: 'ice_terrain',
     palette: ['#dff3ff', '#ff3b2f', '#7aa8ff'],
     codename: 'SIGNAL_04 // GLACIER',
-    blurb:
-      'Guitars out, synthesizers and laptops in. Abstract, glacial and emotionally distant — a deliberate break that rewired what a rock band could be.',
+    mood: 'Cold, electronic, deliberately different',
+    blurb: 'Guitars out, synths in. The break that changed what a rock band could be.',
+    start: 'Everything In Its Right Place',
     log: ['> DETECTING ICE FIELD', '> STATUS: DISSOCIATED', '> TEMPERATURE: ABSOLUTE ZERO'],
     tracks: [
       'Everything in Its Right Place', 'Kid A', 'The National Anthem', 'How to Disappear Completely', 'Treefingers',
@@ -84,8 +88,9 @@ export const ALBUMS = [
     shape: 'knot',
     palette: ['#d9a566', '#2fbf9f', '#7a3b2a'],
     codename: 'SIGNAL_05 // LOOP',
-    blurb:
-      "Recorded alongside Kid A and often read as its twin: stranger, darker, more handmade. Pyramid songs, jazz ghosts and a looped, half-remembered dream.",
+    mood: 'Kid A’s darker, stranger twin',
+    blurb: 'Handmade, jazzy and half-remembered, from the same sessions as Kid A.',
+    start: 'Pyramid Song',
     log: ['> MEMORY INTEGRITY: 41%', '> TOPOLOGY: KNOT (3,5)', '> RECURSION DETECTED'],
     tracks: [
       'Packt Like Sardines in a Crushd Tin Box', 'Pyramid Song', 'Pulk/Pull Revolving Doors', 'You and Whose Army?',
@@ -103,8 +108,9 @@ export const ALBUMS = [
     shape: 'lorenz',
     palette: ['#ff3fb4', '#ffe14a', '#2ee6ff'],
     codename: 'SIGNAL_06 // STATIC',
-    blurb:
-      'Written fast, recorded in days, and loud with the noise of its time: politics, fear, guitars and glitches colliding. Chaos, mapped.',
+    mood: 'Fast, restless, politically jumpy',
+    blurb: 'Written in days and loud with the noise of its time.',
+    start: '2 + 2 = 5',
     log: ['> ATTRACTOR: LORENZ', '> NOISE FLOOR: HOSTILE', '> SYSTEM: UNSTABLE'],
     tracks: [
       '2 + 2 = 5', 'Sit Down. Stand Up.', 'Sail to the Moon', 'Backdrifts', 'Go to Sleep', 'Where I End and You Begin',
@@ -122,8 +128,9 @@ export const ALBUMS = [
     shape: 'rainbow',
     palette: ['#ff2f7e', '#ffb02e', '#35e0ff'],
     codename: 'SIGNAL_07 // SPECTRUM',
-    blurb:
-      'Released as a pay-what-you-want download, and warmer than anything before it. Rhythmic, human and luminous — a band at full colour.',
+    mood: 'Warm, rhythmic, full of colour',
+    blurb: 'The pay-what-you-want release, and the band at its most human.',
+    start: 'Weird Fishes/Arpeggi',
     log: ['> SPECTRUM: FULL', '> DISTRIBUTION: PAY-WHAT-YOU-WANT', '> STATUS: OPTIMIZED'],
     tracks: [
       '15 Step', 'Bodysnatchers', 'Nude', 'Weird Fishes/Arpeggi', 'All I Need', 'Faust Arp', 'Reckoner',
@@ -140,8 +147,9 @@ export const ALBUMS = [
     shape: 'tree',
     palette: ['#ffb45c', '#7bd96a', '#c7392b'],
     codename: 'SIGNAL_08 // GROWTH',
-    blurb:
-      'Short, rhythmic and built from loops: a dense thicket of clicks, birdsong and sub-bass. Organic structure grown from machine patterns.',
+    mood: 'Short, looped, organic',
+    blurb: 'Clicks, birdsong and sub-bass grown from machine patterns.',
+    start: 'Lotus Flower',
     log: ['> BRANCHING: RECURSIVE', '> LOOP LENGTH: 7', '> CANOPY DENSITY: HIGH'],
     tracks: ['Bloom', 'Morning Mr Magpie', 'Little by Little', 'Feral', 'Lotus Flower', 'Codex', 'Give Up the Ghost', 'Separator'],
   },
@@ -155,8 +163,9 @@ export const ALBUMS = [
     shape: 'moon_pool',
     palette: ['#6f9bff', '#e9eeff', '#8a5cff'],
     codename: 'SIGNAL_09 // TIDE',
-    blurb:
-      'Orchestral strings, patient piano, and songs reaching back across decades. Quiet, deep and still — reflections on dark water.',
+    mood: 'Quiet, deep, orchestral',
+    blurb: 'Strings and piano reflecting on dark water. Songs that waited years.',
+    start: 'Daydreaming',
     log: ['> TIDAL LOCK: ENGAGED', '> STRINGS: LONDON CONTEMPORARY ORCHESTRA', '> SURFACE: STILL'],
     tracks: [
       'Burn the Witch', 'Daydreaming', 'Decks Dark', 'Desert Island Disk', 'Ful Stop', 'Glass Eyes', 'Identikit',

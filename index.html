@@ -24,7 +24,6 @@
         <button type="button" data-sheet="timeline">TIMELINE</button>
         <button type="button" data-sheet="band">BAND</button>
         <button type="button" data-sheet="stories">STORIES</button>
-        <button type="button" data-sheet="gallery">GALLERY</button>
         <button type="button" class="listen-nav" data-listen>&#9654; LISTEN</button>
       </nav>
       <div class="top-right">
@@ -40,23 +39,22 @@
     <section class="info" id="info" aria-live="polite">
       <div class="idx">
         <span class="idx-cur" id="idx-cur">01</span><span class="idx-total">/09</span>
-        <span class="codename" id="codename"></span>
       </div>
       <h1 class="title" id="title"></h1>
-      <div class="year-row"><span class="year" id="year"></span><span class="rule"></span><span class="count" id="count"></span></div>
+      <div class="year-row"><span class="year" id="year"></span><span class="rule"></span></div>
+      <p class="mood" id="mood"></p>
       <p class="blurb" id="blurb"></p>
-      <dl class="meta">
-        <div><dt>PRODUCER</dt><dd id="m-producer"></dd></div>
-        <div><dt>LABEL</dt><dd id="m-label"></dd></div>
-      </dl>
       <div class="play-row"><button type="button" class="album-play" id="album-play" data-listen><span>&#9654;</span> LISTEN HERE</button><a class="ext-link" id="album-ext" target="_blank" rel="noopener noreferrer">OPEN IN APP &nearr;</a></div>
-      <button class="tracks-toggle" id="tracks-toggle" type="button" aria-expanded="false">TRACKLIST <b>+</b></button>
+      <button class="tracks-toggle" id="tracks-toggle" type="button" aria-expanded="false" aria-controls="tracks-wrap"><span id="tracks-toggle-label">TRACKLIST</span> <b>+</b></button>
       <div class="tracks" id="tracks-wrap">
-        <h2 class="tracks-h">TRACKLIST <small>// click a title for a tone, &#9654; to open the player</small></h2>
+        <dl class="meta">
+          <div><dt>START WITH</dt><dd id="m-start"></dd></div>
+          <div><dt>PRODUCER</dt><dd id="m-producer"></dd></div>
+          <div><dt>LABEL</dt><dd id="m-label"></dd></div>
+        </dl>
         <div class="svc" id="svc" role="group" aria-label="Streaming service"></div>
         <ol class="tracklist" id="tracks"></ol>
       </div>
-      <div class="log" id="log" aria-hidden="true"></div>
     </section>
 
     <nav class="rail" id="rail" aria-label="Albums"></nav>
@@ -67,7 +65,6 @@
       <button type="button" id="next" aria-label="Next album">&rarr;</button>
     </div>
 
-    <div class="coords" id="coords">X +0.00 &nbsp;Y +0.00</div>
     <footer class="legal">UNOFFICIAL FAN PROJECT &middot; NO AFFILIATION WITH RADIOHEAD &middot; NO RECORDINGS HOSTED &mdash; ALL SOUND IS SYNTHESISED IN YOUR BROWSER</footer>
   </div>
 
@@ -90,7 +87,6 @@
       <div class="sheet-body" id="sheet-body"></div>
     </div>
   </div>
-  <div class="lightbox" id="lightbox" role="dialog" aria-label="Enlarged plate"><figure><img alt=""><figcaption></figcaption></figure></div>
 
   <div class="cursor" id="cursor" aria-hidden="true"></div>
 

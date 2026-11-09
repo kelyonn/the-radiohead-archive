@@ -28,7 +28,7 @@ npm run build    # static site in dist/ (relative paths, works on GitHub Pages)
 - **Timeline** — 1985 to today, linked back to each album.
 - **Band** — the five members plus producer Nigel Godrich and artist Stanley Donwood.
 - **Stories** — nine short, original reads.
-- **Gallery** — generated particle plates (original artwork) and free-licence photographs from Wikimedia Commons, each with a credit link.
+- **Photos** — free-licence Wikimedia Commons photographs in Timeline, Band and Stories, stored locally in `src/assets/pics`; hover an image for its credit link.
 
 ## Deploy (GitHub Pages)
 
